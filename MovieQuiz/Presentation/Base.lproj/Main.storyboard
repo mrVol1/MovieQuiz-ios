@@ -81,8 +81,8 @@
                                     </label>
                                 </subviews>
                             </stackView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bds-Mm-p3o" userLabel="Preview Image">
-                                <rect key="frame" x="20" y="103" width="335" height="502"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" image="Deadpool" translatesAutoresizingMaskIntoConstraints="NO" id="Bds-Mm-p3o" userLabel="Preview Image">
+                                <rect key="frame" x="20" y="102.66666666666666" width="335" height="520"/>
                                 <color key="backgroundColor" name="grey"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -90,8 +90,8 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="30" verticalCompressionResistancePriority="30" ambiguous="YES" text="Рейтинг этого фильма, меньше чем 5? " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kJe-oL-tH9" userLabel="Question Label">
-                                <rect key="frame" x="48" y="625" width="279" height="74"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="30" verticalCompressionResistancePriority="30" misplaced="YES" text="Рейтинг этого фильма, меньше чем 5? " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kJe-oL-tH9" userLabel="Question Label">
+                                <rect key="frame" x="48" y="631" width="279" height="63"/>
                                 <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="24"/>
                                 <color key="textColor" name="white"/>
                                 <nil key="highlightedColor"/>
@@ -107,7 +107,10 @@
                             <constraint firstItem="1O8-bQ-dCO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Low-Ul-0nV"/>
                             <constraint firstItem="OJk-aI-i9t" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="S6Z-Y2-sYR"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="iU8-s0-szG" secondAttribute="bottom" id="X9d-bM-a42"/>
+                            <constraint firstItem="Leh-18-7ij" firstAttribute="top" secondItem="kJe-oL-tH9" secondAttribute="bottom" constant="24" id="Ylo-ZR-TmG"/>
                             <constraint firstItem="iU8-s0-szG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="ciI-1W-Odw"/>
+                            <constraint firstItem="Bds-Mm-p3o" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="dyr-rm-dyS"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Bds-Mm-p3o" secondAttribute="trailing" constant="20" id="nW8-oM-Jdl"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="iU8-s0-szG" secondAttribute="trailing" constant="20" id="trV-Xe-SqH"/>
                             <constraint firstItem="kJe-oL-tH9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="48" id="uk1-XF-3jp"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="kJe-oL-tH9" secondAttribute="trailing" constant="48" id="xAZ-oY-80P"/>
@@ -121,6 +124,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Deadpool" width="2000" height="3000"/>
         <namedColor name="dark">
             <color red="0.10199999809265137" green="0.10599999874830246" blue="0.13300000131130219" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>

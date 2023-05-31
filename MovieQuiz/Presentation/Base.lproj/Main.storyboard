@@ -78,6 +78,9 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="buttonNo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="28F-Ng-Y1g"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Leh-18-7ij" userLabel="Button Yes">
                                                 <rect key="frame" x="177.5" y="0.0" width="157.5" height="60"/>
@@ -93,6 +96,9 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="buttonYes:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KKW-Jg-QHw"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
@@ -112,6 +118,12 @@
                         </constraints>
                     </view>
                     <size key="freeformSize" width="375" height="812"/>
+                    <connections>
+                        <outlet property="counterL" destination="1O8-bQ-dCO" id="LZN-dR-dCv"/>
+                        <outlet property="counterLable" destination="OJk-aI-i9t" id="0wz-0b-fbA"/>
+                        <outlet property="image" destination="Ntn-bw-SYO" id="wWI-nc-g3r"/>
+                        <outlet property="questionLable" destination="kJe-oL-tH9" id="ZA7-jL-ceb"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

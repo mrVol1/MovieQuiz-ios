@@ -4,6 +4,12 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        func show(quiz step: QuizStepViewModel) {
+            image.image = step.image
+            questionLable.text = step.question
+            counterL.text = step.questionNumber
+        }
+        
     }
     
     @IBOutlet weak private var image: UIImageView!
@@ -75,4 +81,5 @@ final class MovieQuizViewController: UIViewController {
             questionNumber: "\(currentQuestionIndex + 1)/\(questions.count)")
         return questionStep
     }
+    
 }

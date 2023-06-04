@@ -4,24 +4,78 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        func show(quiz step: QuizStepViewModel) {
-            image.image = step.image
-            questionLable.text = step.question
-            counterL.text = step.questionNumber
-        }
-
-
     }
     
     @IBOutlet weak private var image: UIImageView!
     @IBOutlet weak private var questionLable: UILabel!
     @IBOutlet weak private var counterL: UILabel!
     
+    // функция, которая показывает вопрос
+    private func show(quiz step: QuizStepViewModel) {
+        image.image = step.image
+        questionLable.text = step.question
+        counterL.text = step.questionNumber
+    }
+    
+    //функция, которая показывает результаты
     private func showAnswerResult(isCorrect: Bool) {
+        if isCorrect { // 1
+                correctAnswers += 1 // 2
+            }
+        
         image.layer.masksToBounds = true // 1
         image.layer.borderWidth = 8 // 2
         image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor // 3
+        
+        // запускаем задачу через 1 секунду c помощью диспетчера задач
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+           // код, который мы хотим вызвать через 1 секунду
+            self.showNextQuestionOrResults()
+        }
     }
+    
+    //функция, которая показывает следующий вопрос
+    private func showNextQuestionOrResults() {
+        if currentQuestionIndex == questions.count - 1 {
+            let text = "Ваш результат: \(correctAnswers)/10" // 1
+            let viewModel = QuizResultsViewModel( // 2
+                title: "Этот раунд окончен!",
+                text: text,
+                buttonText: "Сыграть ещё раз")
+            show(quiz: viewModel) // 3
+        } else {
+            currentQuestionIndex += 1
+            let nextQuestion = questions[currentQuestionIndex]
+            let viewModel = convert(model: nextQuestion)
+            
+            show(quiz: viewModel)
+        }
+    }
+    
+    private func show(quiz result: QuizResultsViewModel) {
+        // Выводим системный алерт об окончании раунда
+        let alert = UIAlertController(
+            title: "Этот раунд окончен!",
+            message: "Ваш результат ???",
+            preferredStyle: .alert)
+
+        let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
+            self.currentQuestionIndex = 0
+            // сбрасываем переменную с количеством правильных ответов
+            self.correctAnswers = 0
+            
+            // заново показываем первый вопрос
+            let firstQuestion = self.questions[self.currentQuestionIndex]
+            let viewModel = self.convert(model: firstQuestion)
+            self.show(quiz: viewModel)
+        }
+
+        alert.addAction(action)
+
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
     
     @IBAction private func buttonYes(_ sender: Any) {
         let currentQuestion = questions[currentQuestionIndex] // 1
@@ -79,13 +133,13 @@ final class MovieQuizViewController: UIViewController {
     
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    
+
     struct QuizStepViewModel {
       let image: UIImage
       let question: String
       let questionNumber: String
     }
-    
+
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
             image: UIImage(named: model.image) ?? UIImage(),
@@ -94,3 +148,13 @@ final class MovieQuizViewController: UIViewController {
         return questionStep
     }
 
+// приватный метод, который содержит логику перехода в один из сценариев
+// метод ничего не принимает и ничего не возвращает
+private func showNextQuestionOrResults() {
+    if currentQuestionIndex == questions.count - 1 { // 1
+        // идём в состояние "Результат квиза"
+    } else { // 2
+        currentQuestionIndex += 1
+        // идём в состояние "Вопрос показан"
+    }
+}

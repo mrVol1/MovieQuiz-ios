@@ -10,35 +10,48 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak private var questionLable: UILabel!
     @IBOutlet weak private var counterL: UILabel!
     
-    // функция, которая показывает вопрос
+    // функция, которая выводит вопрос
     private func show(quiz step: QuizStepViewModel) {
         image.image = step.image
         questionLable.text = step.question
         counterL.text = step.questionNumber
     }
     
-    //функция, которая показывает результаты
-    private func showAnswerResult(isCorrect: Bool) {
-        if isCorrect { // 1
-                correctAnswers += 1 // 2
-            }
-        
-        image.layer.masksToBounds = true // 1
-        image.layer.borderWidth = 8 // 2
-        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor // 3
-        
-        // запускаем задачу через 1 секунду c помощью диспетчера задач
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-           // код, который мы хотим вызвать через 1 секунду
-            self.showNextQuestionOrResults()
-        }
+    struct QuizResultsViewModel {
+      let title: String
+      let text: String
+      let buttonText: String
     }
     
-    //функция, которая показывает следующий вопрос
+    // функция для вывода аллерта
+    private func show(quiz result: QuizResultsViewModel) {
+        // Выводим системный алерт об окончании раунда
+        let alert = UIAlertController(
+            title: "Этот раунд окончен!",
+            message: "Ваш результат ???",
+            preferredStyle: .alert)
+
+        let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
+            currentQuestionIndex = 0
+            // сбрасываем переменную с количеством правильных ответов
+            correctAnswers = 0
+            
+            // заново показываем первый вопрос
+            let firstQuestion = questions[currentQuestionIndex]
+            let viewModel = convert(model: firstQuestion)
+            self.show(quiz: viewModel)
+        }
+
+        alert.addAction(action)
+
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    //функция, которая показывает следующий вопрос или результат
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questions.count - 1 {
-            let text = "Ваш результат: \(correctAnswers)/10" // 1
-            let viewModel = QuizResultsViewModel( // 2
+            let text = "Ваш результат: \(correctAnswers)/10"
+            let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
                 text: text,
                 buttonText: "Сыграть ещё раз")
@@ -52,43 +65,38 @@ final class MovieQuizViewController: UIViewController {
         }
     }
     
-    private func show(quiz result: QuizResultsViewModel) {
-        // Выводим системный алерт об окончании раунда
-        let alert = UIAlertController(
-            title: "Этот раунд окончен!",
-            message: "Ваш результат ???",
-            preferredStyle: .alert)
-
-        let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
-            self.currentQuestionIndex = 0
-            // сбрасываем переменную с количеством правильных ответов
-            self.correctAnswers = 0
-            
-            // заново показываем первый вопрос
-            let firstQuestion = self.questions[self.currentQuestionIndex]
-            let viewModel = self.convert(model: firstQuestion)
-            self.show(quiz: viewModel)
+    //функция, которая выводит результаты
+    private func showAnswerResult(isCorrect: Bool) {
+        if isCorrect {
+                correctAnswers += 1
+            }
+        
+        image.layer.masksToBounds = true
+        image.layer.borderWidth = 8
+        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor // 3
+        
+        // запускаем задачу через 1 секунду c помощью диспетчера задач
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+           // код, который мы хотим вызвать через 1 секунду
+            self.showNextQuestionOrResults()
         }
-
-        alert.addAction(action)
-
-        self.present(alert, animated: true, completion: nil)
     }
     
     
-    
+    // Кнопка да
     @IBAction private func buttonYes(_ sender: Any) {
-        let currentQuestion = questions[currentQuestionIndex] // 1
-            let givenAnswer = true // 2
+        let currentQuestion = questions[currentQuestionIndex]
+            let givenAnswer = true
             
             showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
+    // Кнопка нет
     @IBAction private func buttonNo(_ sender: Any) {
-        let currentQuestion = questions[currentQuestionIndex] // 1
-            let givenAnswer = false // 2
+        let currentQuestion = questions[currentQuestionIndex]
+            let givenAnswer = false
             
-            showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer) // 3
+            showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
         }
     }
     
@@ -148,13 +156,12 @@ final class MovieQuizViewController: UIViewController {
         return questionStep
     }
 
-// приватный метод, который содержит логику перехода в один из сценариев
-// метод ничего не принимает и ничего не возвращает
-private func showNextQuestionOrResults() {
-    if currentQuestionIndex == questions.count - 1 { // 1
-        // идём в состояние "Результат квиза"
-    } else { // 2
-        currentQuestionIndex += 1
-        // идём в состояние "Вопрос показан"
+    // функция с переходом в один из сценариев
+    private func showNextQuestionOrResults() {
+        if currentQuestionIndex == questions.count - 1 { // 1
+            // идём в состояние "Результат квиза"
+        } else { // 2
+            currentQuestionIndex += 1
+            // идём в состояние "Вопрос показан"
+        }
     }
-}

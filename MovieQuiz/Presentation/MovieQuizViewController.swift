@@ -9,26 +9,38 @@ final class MovieQuizViewController: UIViewController {
             questionLable.text = step.question
             counterL.text = step.questionNumber
         }
-        
+
+
     }
     
     @IBOutlet weak private var image: UIImageView!
     @IBOutlet weak private var questionLable: UILabel!
     @IBOutlet weak private var counterL: UILabel!
     
-    @IBAction private func buttonNo(_ sender: Any) {
+    private func showAnswerResult(isCorrect: Bool) {
+        image.layer.masksToBounds = true // 1
+        image.layer.borderWidth = 8 // 2
+        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor // 3
     }
-    
     
     @IBAction private func buttonYes(_ sender: Any) {
+        let currentQuestion = questions[currentQuestionIndex] // 1
+            let givenAnswer = true // 2
+            
+            showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
+    
+    @IBAction private func buttonNo(_ sender: Any) {
+        let currentQuestion = questions[currentQuestionIndex] // 1
+            let givenAnswer = false // 2
+            
+            showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer) // 3
+        }
+    }
+    
     struct QuizQuestion {
-        // строка с названием фильма,
-        // совпадает с названием картинки афиши фильма в Assets
         let image: String
-        // строка с вопросом о рейтинге фильма
         let text: String
-        // булевое значение (true, false), правильный ответ на вопрос
         let correctAnswer: Bool
     }
     
@@ -81,5 +93,4 @@ final class MovieQuizViewController: UIViewController {
             questionNumber: "\(currentQuestionIndex + 1)/\(questions.count)")
         return questionStep
     }
-    
-}
+

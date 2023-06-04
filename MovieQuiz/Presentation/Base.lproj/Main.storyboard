@@ -97,7 +97,7 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
-                                                    <action selector="buttonYes:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KKW-Jg-QHw"/>
+                                                    <action selector="buttonYes:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0Zf-EC-UjO"/>
                                                 </connections>
                                             </button>
                                         </subviews>

@@ -119,8 +119,7 @@
                     </view>
                     <size key="freeformSize" width="375" height="812"/>
                     <connections>
-                        <outlet property="counterL" destination="1O8-bQ-dCO" id="LZN-dR-dCv"/>
-                        <outlet property="counterLable" destination="OJk-aI-i9t" id="0wz-0b-fbA"/>
+                        <outlet property="counterL" destination="5Rs-Pi-ttB" id="HfF-I9-Sdg"/>
                         <outlet property="image" destination="Ntn-bw-SYO" id="wWI-nc-g3r"/>
                         <outlet property="questionLable" destination="kJe-oL-tH9" id="ZA7-jL-ceb"/>
                     </connections>

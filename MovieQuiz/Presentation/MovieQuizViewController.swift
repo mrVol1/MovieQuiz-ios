@@ -25,10 +25,9 @@ final class MovieQuizViewController: UIViewController {
     
     // функция для вывода аллерта
     private func show(quiz result: QuizResultsViewModel) {
-        // Выводим системный алерт об окончании раунда
         let alert = UIAlertController(
             title: "Этот раунд окончен!",
-            message: "Ваш результат ???",
+            message: "Ваш результат:\(correctAnswers)/10",
             preferredStyle: .alert)
 
         let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
@@ -55,7 +54,7 @@ final class MovieQuizViewController: UIViewController {
                 title: "Этот раунд окончен!",
                 text: text,
                 buttonText: "Сыграть ещё раз")
-            show(quiz: viewModel) // 3
+            show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
             let nextQuestion = questions[currentQuestionIndex]
@@ -65,7 +64,7 @@ final class MovieQuizViewController: UIViewController {
         }
     }
     
-    //функция, которая выводит результаты
+    //функция, которая выводит результат ответа
     private func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
                 correctAnswers += 1
@@ -73,7 +72,7 @@ final class MovieQuizViewController: UIViewController {
         
         image.layer.masksToBounds = true
         image.layer.borderWidth = 8
-        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor // 3
+        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         
         // запускаем задачу через 1 секунду c помощью диспетчера задач
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -106,6 +105,7 @@ final class MovieQuizViewController: UIViewController {
         let correctAnswer: Bool
     }
     
+    // мок данные
     private let questions: [QuizQuestion] = [
         QuizQuestion (image: "The Godfather",
                       text: "Рейтинг этого фильма больше чем 6?",
@@ -139,6 +139,7 @@ final class MovieQuizViewController: UIViewController {
                       correctAnswer: false)
     ]
     
+// обнуляем индекс правильного ответа и счетчик корректных ответов
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
 

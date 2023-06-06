@@ -105,16 +105,17 @@ final class MovieQuizViewController: UIViewController {
         }
     }
     
-    
     // функция для вывода аллерта
     private func show(quiz result: QuizResultsViewModel) {
         let alert = UIAlertController(
-            title: "Этот раунд окончен!",
-            message: "Ваш результат:\(correctAnswers)/10",
+            title: result.title,
+            message: result.text,
             preferredStyle: .alert)
         
         let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
-            // заново показываем первый вопрос
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
             let firstQuestion = self.questions[self.currentQuestionIndex]
             let viewModel = self.convert(model: firstQuestion)
             self.show(quiz: viewModel)
@@ -135,10 +136,9 @@ final class MovieQuizViewController: UIViewController {
         image.layer.borderWidth = 8
         image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         
-        // запускаем задачу через 1 секунду c помощью диспетчера задач
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            // код, который мы хотим вызвать через 1 секунду
             self.showNextQuestionOrResults()
+            self.image.layer.borderWidth = 0
         }
     }
     
@@ -147,16 +147,32 @@ final class MovieQuizViewController: UIViewController {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = true
         
+        let myButton = sender as? UIButton
+        myButton?.isEnabled = false
+          
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
+        {
+          myButton?.isEnabled = true
+        }
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
         
     }
-    
+
     // Кнопка нет
     @IBAction private func buttonNo(_ sender: Any) {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
         
+        let myButton = sender as? UIButton
+        myButton?.isEnabled = false
+          
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
+        {
+          myButton?.isEnabled = true
+        }
+        
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        
     }
 }

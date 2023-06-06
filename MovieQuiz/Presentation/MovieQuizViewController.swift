@@ -63,8 +63,12 @@ final class MovieQuizViewController: UIViewController {
         let buttonText: String
     }
     
+    //функция, для отображения первого вопроса
     override func viewDidLoad() {
        super.viewDidLoad()
+        let firstQiestion = self.questions[self.currentQuestionIndex]
+        let viewModel = self.convert(model: firstQiestion)
+        show(quiz: viewModel)
    }
     
     //функция, которая конвертирует мок данные
@@ -76,7 +80,7 @@ final class MovieQuizViewController: UIViewController {
         return questionStep
     }
     
-    // функция, которая выводит первый вопрос
+    // функция, которая выводит следующие вопросы
     private func show(quiz step: QuizStepViewModel) {
         image.image = step.image
         questionLable.text = step.question

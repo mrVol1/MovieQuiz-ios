@@ -65,16 +65,15 @@
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r3o-bQ-w1o" userLabel="Button No">
                                                 <rect key="frame" x="0.0" y="0.0" width="157.5" height="60"/>
-                                                <color key="backgroundColor" name="dark"/>
+                                                <color key="backgroundColor" name="white"/>
+                                                <fontDescription key="fontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
                                                 <color key="tintColor" name="white"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="filled" title="Нет">
-                                                    <fontDescription key="titleFontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
-                                                    <color key="baseForegroundColor" name="dark"/>
-                                                    <color key="baseBackgroundColor" name="white"/>
-                                                </buttonConfiguration>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="Нет">
+                                                    <color key="titleColor" name="dark"/>
+                                                </state>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius ">
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
@@ -84,15 +83,15 @@
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Leh-18-7ij" userLabel="Button Yes">
                                                 <rect key="frame" x="177.5" y="0.0" width="157.5" height="60"/>
-                                                <color key="tintColor" name="white"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="filled" title="Да">
-                                                    <fontDescription key="titleFontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
-                                                    <color key="baseForegroundColor" name="dark"/>
-                                                    <color key="baseBackgroundColor" name="white"/>
-                                                </buttonConfiguration>
+                                                <color key="backgroundColor" name="white"/>
+                                                <fontDescription key="fontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
+                                                <color key="tintColor" name="dark"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="Да">
+                                                    <color key="titleColor" name="dark"/>
+                                                </state>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius ">
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
@@ -113,6 +112,7 @@
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="eZy-4U-gCt" secondAttribute="bottom" id="2QA-dd-0sp"/>
                             <constraint firstItem="OJk-aI-i9t" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="GoF-1o-c2n"/>
+                            <constraint firstItem="OJk-aI-i9t" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="I6G-gT-Qcf"/>
                             <constraint firstItem="eZy-4U-gCt" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="NGe-Sr-M9e"/>
                             <constraint firstItem="OJk-aI-i9t" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-20" id="Xea-5a-ar1"/>
                         </constraints>

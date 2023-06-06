@@ -43,7 +43,15 @@ final class MovieQuizViewController: UIViewController {
     // приватные переменные
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
-
+    
+    //функция, для отображения первого вопроса
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let firstQiestion = self.questions[self.currentQuestionIndex]
+        let viewModel = self.convert(model: firstQiestion)
+        show(quiz: viewModel)
+    }
+    
     //структуры
     struct QuizQuestion {
         let image: String
@@ -62,14 +70,6 @@ final class MovieQuizViewController: UIViewController {
         let text: String
         let buttonText: String
     }
-    
-    //функция, для отображения первого вопроса
-    override func viewDidLoad() {
-       super.viewDidLoad()
-        let firstQiestion = self.questions[self.currentQuestionIndex]
-        let viewModel = self.convert(model: firstQiestion)
-        show(quiz: viewModel)
-   }
     
     //функция, которая конвертирует мок данные
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
@@ -149,16 +149,16 @@ final class MovieQuizViewController: UIViewController {
         
         let myButton = sender as? UIButton
         myButton?.isEnabled = false
-          
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
         {
-          myButton?.isEnabled = true
+            myButton?.isEnabled = true
         }
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
         
     }
-
+    
     // Кнопка нет
     @IBAction private func buttonNo(_ sender: Any) {
         let currentQuestion = questions[currentQuestionIndex]
@@ -166,10 +166,10 @@ final class MovieQuizViewController: UIViewController {
         
         let myButton = sender as? UIButton
         myButton?.isEnabled = false
-          
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
         {
-          myButton?.isEnabled = true
+            myButton?.isEnabled = true
         }
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)

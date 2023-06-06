@@ -2,36 +2,10 @@ import UIKit
 
 final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
     
     @IBOutlet weak private var image: UIImageView!
     @IBOutlet weak private var questionLable: UILabel!
     @IBOutlet weak private var counterL: UILabel!
-
-    // приватные переменные
-    private var currentQuestionIndex = 0
-    private var correctAnswers = 0
-    
-    //структуры
-    struct QuizQuestion {
-        let image: String
-        let text: String
-        let correctAnswer: Bool
-    }
-    
-    struct QuizStepViewModel {
-        let image: UIImage
-        let question: String
-        let questionNumber: String
-    }
-    
-    struct QuizResultsViewModel {
-        let title: String
-        let text: String
-        let buttonText: String
-    }
     
     // мок данные
     private let questions: [QuizQuestion] = [
@@ -66,6 +40,32 @@ final class MovieQuizViewController: UIViewController {
                       text: "Рейтинг этого фильма больше чем 6?",
                       correctAnswer: false)
     ]
+    // приватные переменные
+    private var currentQuestionIndex = 0
+    private var correctAnswers = 0
+
+    //структуры
+    struct QuizQuestion {
+        let image: String
+        let text: String
+        let correctAnswer: Bool
+    }
+    
+    struct QuizStepViewModel {
+        let image: UIImage
+        let question: String
+        let questionNumber: String
+    }
+    
+    struct QuizResultsViewModel {
+        let title: String
+        let text: String
+        let buttonText: String
+    }
+    
+    override func viewDidLoad() {
+       super.viewDidLoad()
+   }
     
     //функция, которая конвертирует мок данные
     private func convert(model: QuizQuestion) -> QuizStepViewModel {

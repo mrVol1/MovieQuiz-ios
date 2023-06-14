@@ -36,7 +36,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             self?.show(quiz: viewModel)
         }
     }
-    
+    // MARK: - MainFunc
     //функция, которая конвертирует мок данные
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
@@ -107,6 +107,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
+    // MARK: - Buttons
     // Кнопка да
     @IBAction private func buttonYes(_ sender: Any) {
         guard let currentQuestion = currentQuestion else {

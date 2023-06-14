@@ -26,7 +26,6 @@
 		D79645F32A39D7BE009C958D /* QuestionFactoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79645F22A39D7BE009C958D /* QuestionFactoryDelegate.swift */; };
 		D79645F52A39E26B009C958D /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79645F42A39E26B009C958D /* AlertModel.swift */; };
 		D79645F72A39E307009C958D /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79645F62A39E307009C958D /* AlertPresenter.swift */; };
-		D79645FB2A39E418009C958D /* AlertPresentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79645FA2A39E418009C958D /* AlertPresentProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,7 +50,6 @@
 		D79645F22A39D7BE009C958D /* QuestionFactoryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactoryDelegate.swift; sourceTree = "<group>"; };
 		D79645F42A39E26B009C958D /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
 		D79645F62A39E307009C958D /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
-		D79645FA2A39E418009C958D /* AlertPresentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresentProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,7 +139,6 @@
 				D79645E62A39C94C009C958D /* QuestionFactory.swift */,
 				D79645F02A39D34C009C958D /* QuestionFactoryProtocol.swift */,
 				D79645F22A39D7BE009C958D /* QuestionFactoryDelegate.swift */,
-				D79645FA2A39E418009C958D /* AlertPresentProtocol.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -245,7 +242,6 @@
 				AD1ABAB22831907B00B3E448 /* AppDelegate.swift in Sources */,
 				D79645EC2A39CB79009C958D /* QuizResultsViewModel.swift in Sources */,
 				AD1ABAB42831907B00B3E448 /* SceneDelegate.swift in Sources */,
-				D79645FB2A39E418009C958D /* AlertPresentProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,13 +8,14 @@
 import Foundation
 import UIKit
 
-class AlertPresent: AlertPresentProtocol {
+class AlertPresent {
     
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    let questionStep: QuizResultsViewModel? = nil
+    private var questionStep: QuizResultsViewModel?
+    private var viewController: MovieQuizViewController?
     
     func show(quiz result: QuizResultsViewModel) {
         let alert = UIAlertController(
@@ -33,6 +34,6 @@ class AlertPresent: AlertPresentProtocol {
         
         alert.addAction(action)
         
-        self.present(alert, animated: true, completion: nil)
+        viewController?.present(alert, animated: true, completion: nil)
     }
 }

@@ -9,12 +9,14 @@ import Foundation
 import UIKit
 
 class AlertPresent: AlertPresentProtocol {
+    
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
+    let questionStep: QuizResultsViewModel? = nil
     
-    private func show(quiz result: QuizResultsViewModel) {
+    func show(quiz result: QuizResultsViewModel) {
         let alert = UIAlertController(
             title: result.title,
             message: result.text,

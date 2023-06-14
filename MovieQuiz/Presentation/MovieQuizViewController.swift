@@ -12,7 +12,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
-    private var show: AlertPresentProtocol?
+    private var showFunc: AlertPresentProtocol?
     
     // MARK: - Lifecycle
     //функция, для загрузки экрана в памяти
@@ -47,7 +47,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         return questionStep
     }
     
-    // функция, которая выводит следующие вопросы
+    // функция, которая выводит первый вопрос
     private func show(quiz step: QuizStepViewModel) {
         image.image = step.image
         questionLable.text = step.question

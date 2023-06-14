@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 class QuestionFactory: QuestionFactoryProtocol  {
     // мок данные
     private let questions: [QuizQuestion] = [
@@ -44,7 +43,7 @@ class QuestionFactory: QuestionFactoryProtocol  {
     ]
     
     func requestNextQuestion() -> QuizQuestion? {
-        guard let index = (0..<questions.count).randomElement() else {  // 2
+        guard let index = (0..<questions.count).randomElement() else {
                 return nil
             }
             return questions[safe: index]

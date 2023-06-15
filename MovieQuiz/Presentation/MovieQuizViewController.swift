@@ -12,7 +12,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
-    private var showFunc: AlertPresent?
+    private var alertPresent: AlertPresent?
     
     // MARK: - Lifecycle
     //функция, для загрузки экрана в памяти
@@ -22,6 +22,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         questionFactory = QuestionFactory(delegate: self)
         
         questionFactory?.requestNextQuestion()
+        
+        alertPresent = AlertPresent(viewController: self)
+        
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -55,12 +58,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            let text = "Ваш результат: \(correctAnswers)/10"
-            let viewModel = QuizResultsViewModel(
+            let message = "Ваш результат: \(correctAnswers)/10"
+            let viewModel = AlertModel(
                 title: "Этот раунд окончен!",
-                text: text,
-                buttonText: "Сыграть ещё раз")
-            showFunc?.show(quiz: viewModel)
+                message: message,
+                buttonText: "Сыграть ещё раз",
+                completion: {
+                    ()
+                }
+            )
+            alertPresent?.show(alertPresent: viewModel)
         } else {
             currentQuestionIndex += 1
             questionFactory?.self.requestNextQuestion()

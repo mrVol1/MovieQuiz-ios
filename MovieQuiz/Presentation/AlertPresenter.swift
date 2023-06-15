@@ -8,22 +8,24 @@
 import Foundation
 import UIKit
 
-class AlertPresent {
+final class AlertPresent {
     
     private var questionFactory: QuestionFactoryProtocol?
-    private var currentQuestion: QuizQuestion?
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    private var questionStep: QuizResultsViewModel?
-    private var viewController: MovieQuizViewController?
+    private var viewController: UIViewController?
     
-    func show(quiz result: QuizResultsViewModel) {
+    init(viewController: UIViewController) {
+        self.viewController = viewController
+    }
+    
+    func show(alertPresent: AlertModel) {
         let alert = UIAlertController(
-            title: result.title,
-            message: result.text,
+            title: alertPresent.title,
+            message: alertPresent.message,
             preferredStyle: .alert)
         
-        let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
+        let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { [weak self] _ in
             guard let self = self else { return }
             
             self.currentQuestionIndex = 0

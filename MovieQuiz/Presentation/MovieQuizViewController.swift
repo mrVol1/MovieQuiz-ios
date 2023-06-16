@@ -42,14 +42,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
         
         //сериализация данных в json
-        func jsonObject(with data: Data, options opt: JSONSerialization.ReadingOptions = []) throws -> Any {
-            do {
+        func jsonObject(with data: Data, options opt: JSONSerialization.ReadingOptions = []) throws {
+                        do {
                 let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                 print(json as Any)
             } catch {
                 print("Failed to parse: \(jsonString as Any)")
             }
-        } return
+        }
     }
     
     

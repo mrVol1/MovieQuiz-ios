@@ -25,6 +25,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         alertPresent = AlertPresent(viewController: self)
         
+        enum FileManagerError: Error {
+            case fileDoesntExist
+        } 
+        
     }
     
     // MARK: - QuestionFactoryDelegate

@@ -7,109 +7,48 @@
 
 import Foundation
 
-struct Movie {
-    let id: String
-    let title: String
-    let year: Int
-    let image: String
-    let releaseDate: String
-    let runtimeMins: Int
-    let directors: String
-    let actorList: [Actor]
-    
-    struct Actor {
-        let id: String
-        let image: String
-        let name: String
-        let asCharacter: String
-    }
-    
-    enum CodingKeys: CodingKey {
-       case id, title, year, image, releaseDate, runtimeMins, directors
-       case actorList
-     }
-    
-    enum ParseError: Error {
-        case yearFailure
-        case runtimeMinsFailure
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        id = try container.decode(String.self, forKey: .id)
-        title = try container.decode(String.self, forKey: .title)
-        
-        let year = try container.decode(String.self, forKey: .year)
-        guard let yearValue = Int(year) else {
-            throw ParseError.yearFailure
-        }
-        self.year = yearValue
-        
-        image = try container.decode(String.self, forKey: .image)
-        releaseDate = try container.decode(String.self, forKey: .releaseDate)
-        
-        let runtimeMins = try container.decode(String.self, forKey: .runtimeMins)
-        guard let runtimeMinsValue = Int(runtimeMins) else {
-            throw ParseError.runtimeMinsFailure
-        }
-        self.runtimeMins = runtimeMinsValue
-        
-        directors = try container.decode(String.self, forKey: .directors)
-        actorList = try container.decode([Actor].self, forKey: .actorList)
-    }
-}
-
-
-func getMovie(from jsonString: String) -> Movie? {
-    var movie: Movie? = nil
-        do {
-            guard let data = jsonString.data(using: .utf8) else {
-                return nil
-            }
-            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-
-            guard let json = json,
-                  let id = json["id"] as? String,
-                  let title = json["title"] as? String,
-                  let jsonYear = json["year"] as? String,
-                  let year = Int(jsonYear),
-                  let image = json["image"] as? String,
-                  let releaseDate = json["releaseDate"] as? String,
-                  let jsonRuntimeMins = json["runtimeMins"] as? String,
-                  let runtimeMins = Int(jsonRuntimeMins),
-                  let directors = json["directors"] as? String,
-                  let actorList = json["actorList"] as? [Any] else {
-                return nil
-            }
-
-            var actors: [Actor] = []
-
-            for actor in actorList {
-                guard let actor = actor as? [String: Any],
-                      let id = actor["id"] as? String,
-                      let image = actor["image"] as? String,
-                      let name = actor["name"] as? String,
-                      let asCharacter = actor["asCharacter"] as? String else {
-                    return nil
-                }
-                let mainActor = Actor(id: id,
-                                      image: image,
-                                      name: name,
-                                      asCharacter: asCharacter)
-                actors.append(mainActor)
-            }
-            movie = Movie(id: id,
-                          title: title,
-                          year: year,
-                          image: image,
-                          releaseDate: releaseDate,
-                          runtimeMins: runtimeMins,
-                          directors: directors,
-                          actorList: actors)
-        } catch {
-            print("Failed to parse: \(jsonString)")
-        }
-
-        return movie
-}
+////добавление файла данных в директорию проекта
+//var documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//    let fileName = "inception.json"
+//    documentsURL.appendPathComponent(fileName)
+//    let jsonString = try? String(contentsOf: documentsURL)
+//
+//    // приведение типа данных к типу data
+//    guard let data = jsonString?.data(using: .utf8) else {
+//        return
+//    }
+//
+////сериализация данных в json
+//func jsonObject(with data: Data, options opt: JSONSerialization.ReadingOptions = []) throws {
+//    do {
+//        let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+//        print(json as Any)
+//    } catch {
+//        print("Failed to parse: \(jsonString as Any)")
+//    }
+//}
+//
+//struct Actor: Codable {
+//    let id: String
+//    let image: String
+//    let name: String
+//    let asCharacter: String
+//}
+//
+//struct Movie: Codable {
+//    let id: String
+//    let rank: String
+//    let title: String
+//    let fullTitle: String
+//    let year: String
+//    let image: String
+//    let crew: String
+//    let imDbRating: String
+//    let imDbRatingCount: String
+//}
+//
+//struct Top: Decodable {
+//    let items: [Movie]
+//}
+//
+//let result = try? JSONDecoder().decode(Top.self, from: data)

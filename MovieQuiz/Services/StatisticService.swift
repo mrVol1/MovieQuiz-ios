@@ -28,7 +28,7 @@ final class StatisticServiceImplementation: StatisticService {
     func store(correct count: Int, total amount: Int) {
         <#code#>
     }
-    
+      
     var totalAccuracy: Double
     
     var gamesCount: Int

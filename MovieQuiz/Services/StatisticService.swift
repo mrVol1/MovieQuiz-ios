@@ -11,12 +11,6 @@ private enum Keys: String {
     case correct, total, bestGame, gamesCount
 }
 
-struct GameRecord: Codable {
-    let correct: Int
-    let total: Int
-    let date: Date
-}
-
 protocol StatisticService {
     func store(correct count: Int, total amount: Int)
     var totalAccuracy: Double { get }
@@ -24,19 +18,60 @@ protocol StatisticService {
     var bestGame: GameRecord { get }
 }
 
+struct GameRecord: Codable {
+    let correct: Int
+    let total: Int
+    let date: Date
+}
+
 final class StatisticServiceImplementation: StatisticService {
+    
+    
+    private let userDefaults = UserDefaults.standard
+    
     func store(correct count: Int, total amount: Int) {
-        <#code#>
     }
     
-    var totalAccuracy: Double
+    var totalAccuracy: Double {
+        get {
+            guard let data = userDefaults.data(forKey: Keys.total.rawValue),
+                  let total = try? JSONDecoder().decode(Double.self, from: data) else {
+                return .init()
+            }
+            
+            return total
+        }
+        set {
+            guard let data = try? JSONEncoder().encode(newValue) else {
+                print("Невозможно сохранить результат")
+                return
+            }
+            userDefaults.set(data, forKey: Keys.total.rawValue)
+        }
+    }
     
-    var gamesCount: Int
+    var gamesCount: Int {
+        get {
+            guard let data = userDefaults.data(forKey: Keys.gamesCount.rawValue),
+                  let count = try? JSONDecoder().decode(Int.self, from: data) else{
+                return .init()
+            }
+            return count
+        }
+        
+            set {
+                guard let data = try? JSONEncoder().encode(newValue) else {
+                    print("Невозможно сохранить результат")
+                    return
+                }
+                userDefaults.set(data, forKey: Keys.gamesCount.rawValue)
+            }
+        }
     
     var bestGame: GameRecord {
         get {
             guard let data = userDefaults.data(forKey: Keys.bestGame.rawValue),
-            let record = try? JSONDecoder().decode(GameRecord.self, from: data) else {
+                  let record = try? JSONDecoder().decode(GameRecord.self, from: data) else {
                 return .init(correct: 0, total: 0, date: Date())
             }
             
@@ -52,6 +87,4 @@ final class StatisticServiceImplementation: StatisticService {
             userDefaults.set(data, forKey: Keys.bestGame.rawValue)
         }
     }
-    
-    
 }

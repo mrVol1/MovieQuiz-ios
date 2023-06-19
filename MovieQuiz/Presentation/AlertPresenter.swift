@@ -14,6 +14,7 @@ final class AlertPresent {
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private var viewController: UIViewController?
+    private var completion: UIViewController?
     
     init(viewController: UIViewController) {
         self.viewController = viewController
@@ -28,10 +29,9 @@ final class AlertPresent {
         let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { [weak self] _ in
             guard let self = self else { return }
             
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-            
             questionFactory?.requestNextQuestion()
+            
+            alertPresent.completion()
         }
         
         alert.addAction(action)

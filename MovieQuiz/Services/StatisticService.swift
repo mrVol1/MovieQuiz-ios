@@ -29,8 +29,16 @@ final class StatisticServiceImplementation: StatisticService {
     private let userDefaults = UserDefaults.standard
     
     func store(correct count: Int, total amount: Int) {
-        UserDefaults.standard.integer(forKey: Keys.total.rawValue)
-        UserDefaults.standard.integer(forKey: Keys.correct.rawValue)
+        UserDefaults.standard.integer(forKey: "count")
+        UserDefaults.standard.integer(forKey: "amount")
+        if amount > count {
+            UserDefaults.standard.set("amount", forKey: "count")
+            UserDefaults.standard.integer(forKey: "count")
+            print(count)
+        } else {
+            UserDefaults.standard.integer(forKey: "count")
+            print(count)
+        }
     }
     
     var totalAccuracy: Double {

@@ -9,11 +9,17 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // приватные переменные
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
+    private var store: StatisticService?
+    private var totalAccuracy: StatisticService?
+    private var gamesCount: StatisticService?
+    private var bestGame: StatisticService?
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresent: AlertPresent?
     private var statisticService: StatisticService?
+    private var dateTimeDefaultFormatter: DateFormatter?
+    private var dateTimeString: DateFormatter?
     
     
     // MARK: - Lifecycle
@@ -28,6 +34,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         alertPresent = AlertPresent(viewController: self)
         
         statisticService = StatisticServiceImplementation()
+        
+        dateTimeString = dateTimeDefaultFormatter
         
 //        //менеджер ошибок
 //        enum FileManagerError: Error {
@@ -91,7 +99,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     //функция показа следующего вопроса или показывает результат
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            let message = "Ваш результат: \(correctAnswers)/10"
+            let message = "Ваш результат: \(correctAnswers)/10, \n Количество сыгранных квизов: \(String(describing: store)), \n Рекорд: \(String(describing: totalAccuracy)) (\(Date().dateTimeString)), \n Количество сыгранных квизов:\(String(describing: gamesCount)), \n Средняя точность \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.00))/10"
             let viewModel = AlertModel(
                 title: "Этот раунд окончен!",
                 message: message,

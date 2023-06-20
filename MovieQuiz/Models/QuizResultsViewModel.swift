@@ -12,4 +12,8 @@ struct QuizResultsViewModel {
     let title: String
     let text: String
     let buttonText: String
+    let store: String
+    let totalAccuracy: String
+    let gamesCount: String
+    let bestGame: String
 }

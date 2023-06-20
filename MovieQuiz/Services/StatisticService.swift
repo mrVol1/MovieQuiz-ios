@@ -12,7 +12,7 @@ private enum Keys: String {
 }
 
 protocol StatisticService {
-    func store(correct count: Int, total amount: Int)
+    func store(correct: Int, total: Int)
     var totalAccuracy: Double { get }
     var gamesCount: Int { get }
     var bestGame: GameRecord { get }
@@ -22,29 +22,44 @@ struct GameRecord: Codable {
     let correct: Int
     let total: Int
     let date: Date
+    
+    private func comparison() {
+        
+    }
 }
 
 final class StatisticServiceImplementation: StatisticService {
+    var gamesCount: Int = 0
+    
+    var totalAccuracy: Double = 0.0
     
     private let userDefaults = UserDefaults.standard
     
-    func store(correct count: Int, total amount: Int) {
-        UserDefaults.standard.integer(forKey: "count")
-        UserDefaults.standard.integer(forKey: "amount")
-        if amount > count {
-            UserDefaults.standard.set("amount", forKey: "count")
-            UserDefaults.standard.integer(forKey: "count")
-            print(count)
-        } else {
-            UserDefaults.standard.integer(forKey: "count")
-            print(count)
+    func store(correct: Int, total: Int) {
+        self.correct += correct
+        self.total += total
+        self.gamesCount += 1
+        
+        let currentGameRecord = GameRecord(correct: correct, total: total, date: Date())
+        
+        if let previosGameRecord = bestGame {
+            if currentGameRecord > previosGameRecord {
+                bestGame = currentGameRecord
+            }
         }
     }
     
     var totalAccuracy: Double {
         get {
+            let totalA = Double(correct)/Double(total)*100
+            return totalA
+        }
+    }
+    
+    var total: Int {
+        get {
             guard let data = userDefaults.data(forKey: Keys.total.rawValue),
-                  let total = try? JSONDecoder().decode(Double.self, from: data) else {
+                  let total = try? JSONDecoder().decode(Int.self, from: data) else {
                 return .init()
             }
             
@@ -59,13 +74,13 @@ final class StatisticServiceImplementation: StatisticService {
         }
     }
     
-    var gamesCount: Int {
+    var correct: Int {
         get {
-            guard let data = userDefaults.data(forKey: Keys.gamesCount.rawValue),
-                  let count = try? JSONDecoder().decode(Int.self, from: data) else{
+            guard let data = userDefaults.data(forKey: Keys.correct.rawValue),
+                  let correct = try? JSONDecoder().decode(Int.self, from: data) else{
                 return .init()
             }
-            return count
+            return correct
         }
         
             set {
@@ -73,7 +88,7 @@ final class StatisticServiceImplementation: StatisticService {
                     print("Невозможно сохранить результат")
                     return
                 }
-                userDefaults.set(data, forKey: Keys.gamesCount.rawValue)
+                userDefaults.set(data, forKey: Keys.correct.rawValue)
             }
         }
     

@@ -13,7 +13,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresent: AlertPresent?
-    private var result: AlertPresent?
+    private var statisticService: StatisticService?
+    
     
     // MARK: - Lifecycle
     //функция, для загрузки экрана в памяти
@@ -25,6 +26,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         questionFactory?.requestNextQuestion()
         
         alertPresent = AlertPresent(viewController: self)
+        
+        statisticService = StatisticServiceImplementation()
         
 //        //менеджер ошибок
 //        enum FileManagerError: Error {

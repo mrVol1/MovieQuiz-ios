@@ -31,7 +31,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         questionFactory?.requestNextQuestion()
         
-        alertPresent = AlertPresent(viewController: self)
+        alertPresent = AlertPresentImplementation(viewController: self)
         
         statisticService = StatisticServiceImplementation()
         
@@ -98,23 +98,37 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     //функция показа следующего вопроса или показывает результат
     private func showNextQuestionOrResults() {
+        
         if currentQuestionIndex == questionsAmount - 1 {
-            let message = "Ваш результат: \(correctAnswers)/10, \n Количество сыгранных квизов: \(String(describing: store)), \n Рекорд: \(String(describing: totalAccuracy)) (\(Date().dateTimeString)), \n Количество сыгранных квизов:\(String(describing: gamesCount)), \n Средняя точность \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.00))/10"
-            let viewModel = AlertModel(
-                title: "Этот раунд окончен!",
-                message: message,
-                buttonText: "Сыграть ещё раз",
-                completion: { [weak self] in
-                    self?.correctAnswers = 0
-                    self?.currentQuestionIndex = 0
-                    self?.questionFactory?.requestNextQuestion()
-                }
-            )
-            alertPresent?.show(alertPresent: viewModel)
+            showQuizResult()
         } else {
             currentQuestionIndex += 1
             questionFactory?.self.requestNextQuestion()
         }
+    }
+    
+    private func showQuizResult() {
+        statisticService?.store(correct: correctAnswers, total: questionsAmount)
+        
+        guard let bestGame = statisticService?.bestGame else {
+            assertionFailure("Ошибка игры")
+            return
+        }
+        
+        let message = "Ваш результат: \(correctAnswers)/10, \n Количество сыгранных квизов: \(statisticService?.gamesCount ?? 0), \n Рекорд: \( statisticService?.totalAccuracy ?? 0) (\( (statisticService?.bestGame?.date.dateTimeString) ?? "Ошибка времени")), \n Средняя точность \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.00))/10"
+        
+        let viewModel = AlertModel(
+            title: "Этот раунд окончен!",
+            message: message,
+            buttonText: "Сыграть ещё раз",
+            completion: { [weak self] in
+                self?.correctAnswers = 0
+                self?.currentQuestionIndex = 0
+                self?.questionFactory?.requestNextQuestion()
+            }
+        )
+        alertPresent?.show(alertPresent: viewModel)
+        
     }
     
     //функция, которая выводит результат ответа

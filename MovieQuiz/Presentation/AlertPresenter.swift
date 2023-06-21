@@ -8,18 +8,22 @@
 import Foundation
 import UIKit
 
-final class AlertPresent {
+protocol AlertPresent {
     
-    private var questionFactory: QuestionFactoryProtocol?
-    private var currentQuestionIndex = 0
-    private var correctAnswers = 0
-    private var viewController: UIViewController?
-    private var completion: UIViewController?
+    func show (alertPresent: AlertModel)
     
-    init(viewController: UIViewController) {
+}
+
+final class AlertPresentImplementation {
+
+    private weak var viewController: UIViewController?
+
+    init(viewController: UIViewController? = nil) {
         self.viewController = viewController
     }
-    
+}
+
+extension AlertPresentImplementation: AlertPresent {
     
     func show(alertPresent: AlertModel) {
         let alert = UIAlertController(
@@ -27,16 +31,13 @@ final class AlertPresent {
             message: alertPresent.message,
             preferredStyle: .alert)
         
-        let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            
-            questionFactory?.requestNextQuestion()
+        let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { _ in
             
             alertPresent.completion()
         }
         
         alert.addAction(action)
         
-        viewController?.present(alert, animated: true, completion: nil)
+        viewController?.present(alert, animated: true)
     }
 }

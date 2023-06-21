@@ -110,7 +110,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private func showQuizResult() {
         statisticService?.store(correct: correctAnswers, total: questionsAmount)
         
-        guard let bestGame = statisticService?.bestGame else {
+        guard (statisticService?.bestGame) != nil else {
             assertionFailure("Ошибка игры")
             return
         }

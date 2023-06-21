@@ -115,7 +115,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             return
         }
         
-        let message = "Ваш результат: \(correctAnswers)/10, \n Количество сыгранных квизов: \(statisticService?.gamesCount ?? 0), \n Рекорд: \( statisticService?.totalAccuracy ?? 0) (\( (statisticService?.bestGame?.date.dateTimeString) ?? "Ошибка времени")), \n Средняя точность \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.00))/10"
+        let message = "Ваш результат: \(correctAnswers)/10, \n Количество сыгранных квизов: \(statisticService?.gamesCount ?? 0), \n Рекорд: \( statisticService?.bestGame?.correct ?? 0)/10 (\( (statisticService?.bestGame?.date.dateTimeString) ?? "Ошибка времени")), \n Средняя точность \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.00))"
+        
         
         let viewModel = AlertModel(
             title: "Этот раунд окончен!",

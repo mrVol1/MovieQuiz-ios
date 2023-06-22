@@ -16,10 +16,6 @@ protocol StatisticService {
 
 final class StatisticServiceImplementation {
     
-    private enum Keys: String {
-        case correct, total, bestGame, gamesCount
-    }
-    
     private let userDefaults: UserDefaults
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
@@ -34,6 +30,10 @@ final class StatisticServiceImplementation {
         self.decoder = decoder
         self.encoder = encoder
         self.dateProvider = dateProvider
+    }
+    
+    private enum Keys: String {
+        case correct, total, bestGame, gamesCount
     }
 }
 
@@ -55,7 +55,9 @@ extension StatisticServiceImplementation: StatisticService {
         }
         
         set {
-            userDefaults.set(newValue, forKey: Keys.total.rawValue)
+            if total != 0 {
+                userDefaults.set(newValue, forKey: Keys.total.rawValue)
+            }
         }
     }
     

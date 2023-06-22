@@ -36,37 +36,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         statisticService = StatisticServiceImplementation()
         
         dateTimeString = dateTimeDefaultFormatter
-        
-//        //менеджер ошибок
-//        enum FileManagerError: Error {
-//            case fileDoesntExist
-//        }
-//        
-//        //добавление файла данных в директорию проекта
-//        var documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-//        let fileName = "inception.json"
-//        documentsURL.appendPathComponent(fileName)
-//        let jsonString = try? String(contentsOf: documentsURL)
-//
-//        // приведение типа данных к типу data
-//        guard let data = jsonString?.data(using: .utf8) else {
-//            return
-//        }
-//
-//        //сериализация данных в json
-//        func jsonObject(with data: Data, options opt: JSONSerialization.ReadingOptions = []) throws {
-//                        do {
-//                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-//                print(json as Any)
-//            } catch {
-//                print("Failed to parse: \(jsonString as Any)")
-//            }
-//        }
     }
     
-    
-
-
     
     // MARK: - QuestionFactoryDelegate
     //метод делегата
@@ -96,6 +67,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         questionLable.text = step.question
         counterL.text = step.questionNumber
     }
+    
     //функция показа следующего вопроса или показывает результат
     private func showNextQuestionOrResults() {
         
@@ -103,20 +75,21 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             showQuizResult()
         } else {
             currentQuestionIndex += 1
-            questionFactory?.self.requestNextQuestion()
+            questionFactory?.requestNextQuestion()
         }
     }
     
     private func showQuizResult() {
         statisticService?.store(correct: correctAnswers, total: questionsAmount)
         
-        guard (statisticService?.bestGame) != nil else {
+        guard let statisticService = statisticService else {
             assertionFailure("Ошибка игры")
             return
         }
         
-        let message = "Ваш результат: \(correctAnswers)/10, \n Количество сыгранных квизов: \(statisticService?.gamesCount ?? 0), \n Рекорд: \( statisticService?.bestGame?.correct ?? 0)/10 (\( (statisticService?.bestGame?.date.dateTimeString) ?? "Ошибка времени")), \n Средняя точность \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.00))"
-        
+        let message = """
+            Ваш результат: \(correctAnswers)/10,\n Количество сыгранных квизов: \(statisticService.gamesCount),\n Рекорд: \( statisticService.bestGame?.correct ?? 0)/10 (\( (statisticService.bestGame?.date.dateTimeString) ?? "Ошибка времени")),\n Средняя точность \(String(format: "%.2f", statisticService.totalAccuracy))
+            """
         
         let viewModel = AlertModel(
             title: "Этот раунд окончен!",
@@ -160,7 +133,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         let myButton = sender as? UIButton
         myButton?.isEnabled = false
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
         {
             myButton?.isEnabled = true
@@ -179,7 +152,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         let myButton = sender as? UIButton
         myButton?.isEnabled = false
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
         {
             myButton?.isEnabled = true

@@ -5,6 +5,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak private var image: UIImageView!
     @IBOutlet weak private var questionLable: UILabel!
     @IBOutlet weak private var counterL: UILabel!
+    @IBOutlet weak var loader: UIActivityIndicatorView!
     
     // приватные переменные
     private var currentQuestionIndex = 0
@@ -20,8 +21,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var statisticService: StatisticService?
     private var dateTimeDefaultFormatter: DateFormatter?
     private var dateTimeString: DateFormatter?
-    
-    
+
     // MARK: - Lifecycle
     //функция, для загрузки экрана в памяти
     override func viewDidLoad() {
@@ -38,6 +38,34 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         dateTimeString = dateTimeDefaultFormatter
     }
     
+    
+    // MARK: - Loader Indicator
+    private func showLoaderIndecator() {
+        loader.isHidden = false
+        loader.startAnimating()
+    }
+    
+    private func hideLoadingIndicator () {
+        loader.isHidden = true
+    }
+    
+    // MARK: - Show Alert Error for Data Response
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText: "Попробовать еще раз") { [weak self] in
+            guard let self = self else { return }
+            
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
+            self.questionFactory?.requestNextQuestion()
+        }
+        
+        alertPresent?.show(alertPresent: model)
+    }
     
     // MARK: - QuestionFactoryDelegate
     //метод делегата

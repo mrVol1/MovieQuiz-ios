@@ -11,10 +11,12 @@ class QuestionFactory: QuestionFactoryProtocol  {
     
     private let moviesLoader: MoviesLoading
     private var delegate: QuestionFactoryDelegate?
+    private var randomWord: String
     
-    init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?) {
+    init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?, randomWord: String) {
         self.moviesLoader = moviesLoader
         self.delegate = delegate
+        self.randomWord = randomWord
     }
     
     private var movies: [MostPopularMovie] = []
@@ -50,9 +52,22 @@ class QuestionFactory: QuestionFactoryProtocol  {
             }
             
             let rating = Float(movie.rating) ?? 0
+            let random = Int.random(in: 1..<10)
             
-            let text = "Рейтинг этого фильма больше чем 7?"
-            let correctAnswer = rating > 7
+            func randomWordComparison (wordMore: String, wordLess: String) -> String {
+                
+                if self.randomWord == wordMore {
+                    self.randomWord = wordLess
+                } else {
+                    self.randomWord = wordMore
+                }
+                return self.randomWord
+            }
+            
+            let randomWordMoreOrLess = randomWordComparison(wordMore: "больше", wordLess: "меньше")
+            
+            let text = "Рейтинг этого фильма \(randomWordMoreOrLess) чем \(random)?"
+            let correctAnswer = Int(rating) > random
             
             let question = QuizQuestion(image: imageData,
                                         text: text,

@@ -21,6 +21,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var statisticService: StatisticService?
     private var dateTimeDefaultFormatter: DateFormatter?
     private var dateTimeString: DateFormatter?
+    private var randomWord = "больше"
 
     // MARK: - Lifecycle
     //функция, для загрузки экрана в памяти
@@ -28,7 +29,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         super.viewDidLoad()
         
         image.layer.cornerRadius = 20
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self, randomWord: self.randomWord)
+        
         statisticService = StatisticServiceImplementation()
 
         showLoaderIndecator()

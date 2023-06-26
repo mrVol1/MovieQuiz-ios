@@ -27,15 +27,27 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        questionFactory = QuestionFactory(delegate: self)
-        
-        questionFactory?.requestNextQuestion()
+        image.layer.cornerRadius = 20
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        statisticService = StatisticServiceImplementation()
+
+        showLoaderIndecator()
+        questionFactory?.loadData()
         
         alertPresent = AlertPresentImplementation(viewController: self)
         
-        statisticService = StatisticServiceImplementation()
-        
         dateTimeString = dateTimeDefaultFormatter
+    }
+    
+    // функция, которая скрывает лоадер и показывает первый вопрос
+    func didLoadDataFromServer() {
+        loader.isHidden = true // скрываем индикатор загрузки
+        questionFactory?.requestNextQuestion()
+    }
+    
+    // функция, которая выводит ошибку, если она возникла при загрузке данных с сети
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
     }
     
     
@@ -84,7 +96,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     //функция, которая конвертирует мок данные
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
-            image: UIImage(named: model.image) ?? UIImage(),
+            image: UIImage(data: model.image) ?? UIImage(),
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
         return questionStep

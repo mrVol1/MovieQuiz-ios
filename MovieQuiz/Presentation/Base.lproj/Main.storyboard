@@ -129,6 +129,8 @@
                     </view>
                     <size key="freeformSize" width="375" height="812"/>
                     <connections>
+                        <outlet property="buttonNo" destination="r3o-bQ-w1o" id="k70-xf-PwT"/>
+                        <outlet property="buttonYes" destination="Leh-18-7ij" id="1mp-dG-Gfn"/>
                         <outlet property="counterL" destination="5Rs-Pi-ttB" id="HfF-I9-Sdg"/>
                         <outlet property="image" destination="Ntn-bw-SYO" id="wWI-nc-g3r"/>
                         <outlet property="loader" destination="OpY-uO-Eye" id="hXg-F5-tSo"/>

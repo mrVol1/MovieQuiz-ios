@@ -82,7 +82,7 @@ class QuestionFactory: QuestionFactoryProtocol  {
 }
 
 //
-//    // мок данные
+//    /// мок данные
 //    private let questions: [QuizQuestion] = [
 //        QuizQuestion (image: "The Godfather",
 //                      text: "Рейтинг этого фильма больше чем 6?",

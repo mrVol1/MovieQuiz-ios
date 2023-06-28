@@ -32,8 +32,9 @@ extension AlertPresentImplementation: AlertPresent {
             preferredStyle: .alert)
         
         let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { _ in
-            
+
             alertPresent.completion()
+            
         }
         
         alert.addAction(action)

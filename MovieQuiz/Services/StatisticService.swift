@@ -55,9 +55,7 @@ extension StatisticServiceImplementation: StatisticService {
         }
         
         set {
-            if total != 0 {
                 userDefaults.set(newValue, forKey: Keys.total.rawValue)
-            }
         }
     }
     
@@ -72,7 +70,8 @@ extension StatisticServiceImplementation: StatisticService {
     }
     
     var totalAccuracy: Double {
-        Double(correct)/Double(total) * 100
+        guard total != 0 else { return 0 }
+        return Double(correct)/Double(total) * 100
     }
     
     var bestGame: GameRecord? {

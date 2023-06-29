@@ -54,7 +54,9 @@ class QuestionFactory: QuestionFactoryProtocol  {
             let rating = Float(movie.rating) ?? 0
             let random = Int.random(in: 1..<10)
             
-            func randomWordComparison (wordMore: String, wordLess: String) -> String {
+            func randomWordComparison () -> String {
+                let wordMore = "больше"
+                let wordLess = "меньше"
                 
                 if self.randomWord == wordMore {
                     self.randomWord = wordLess
@@ -64,7 +66,7 @@ class QuestionFactory: QuestionFactoryProtocol  {
                 return self.randomWord
             }
             
-            let randomWordMoreOrLess = randomWordComparison(wordMore: "больше", wordLess: "меньше")
+            let randomWordMoreOrLess = randomWordComparison()
             
             let text = "Рейтинг этого фильма \(randomWordMoreOrLess) чем \(random)?"
             let correctAnswer = Int(rating) > random

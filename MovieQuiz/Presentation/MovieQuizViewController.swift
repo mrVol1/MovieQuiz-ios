@@ -49,42 +49,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         showNetworkError(message: error.localizedDescription)
     }
     
-    
-    // MARK: - Loader Indicator
-        ///показывает лоадер
-    private func showLoaderIndecator() {
-        loader.hidesWhenStopped = true
-        loader.startAnimating()
-    }
-        ///скрывает лоудер
-    private func hideLoadingIndicator () {
-        loader.hidesWhenStopped = false
-    }
-    
-        /// функция, которая скрывает лоадер и показывает первый вопрос
-    func didLoadDataFromServer() {
-        hideLoadingIndicator() // скрываем индикатор загрузки
-        questionFactory?.requestNextQuestion()
-    }
-    
-    // MARK: - Show Alert Error for Data Response
-    private func showNetworkError(message: String) {
-        hideLoadingIndicator()
-        
-        let model = AlertModel(title: "Ошибка",
-                               message: message,
-                               buttonText: "Попробовать еще раз") { [weak self] in
-            guard let self = self else { return }
-            
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-            
-            self.questionFactory?.requestNextQuestion()
-        }
-        
-        alertPresent?.show(alertPresent: model)
-    }
-    
     // MARK: - QuestionFactoryDelegate
         ///метод делегата
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -98,6 +62,37 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             self?.show(quiz: viewModel)
         }
     }
+    
+    // MARK: - Loader Indicator
+    
+        /// функция, которая скрывает лоадер и показывает первый вопрос
+    func didLoadDataFromServer() {
+        hideLoadingIndicator() // скрываем индикатор загрузки
+        questionFactory?.requestNextQuestion()
+    }
+    
+        ///показывает лоадер
+    private func showLoaderIndecator() {
+        loader.hidesWhenStopped = true
+        loader.startAnimating()
+    }
+        ///скрывает лоудер
+    private func hideLoadingIndicator () {
+        loader.hidesWhenStopped = true
+        loader.stopAnimating()
+    }
+    
+    // MARK: - Show Alert Error for Data Response
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText: "Попробовать еще раз") {
+            self.questionFactory?.loadData()
+        }
+    }
+    
     // MARK: - MainFunc
         ///функция, которая конвертирует полученные данные
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
@@ -125,30 +120,17 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
         ///функция, которая выводит результат ответа (правильно или неправильно ответил)
-    private func showAnswerResult(isCorrect: Bool, myButtonYes: Bool, myButtonNo: Bool) {
+    private func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             correctAnswers += 1
         }
         
         image.layer.masksToBounds = true
         image.layer.borderWidth = 8
-        
-        if myButtonYes == true {
-            image.layer.borderColor = isCorrect ? UIColor.ypRed.cgColor :
-            UIColor.ypGreen.cgColor
-        } else {
-            image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        }
-        
-        if myButtonNo == true {
-            image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        } else {
-            image.layer.borderColor = isCorrect ? UIColor.ypRed.cgColor : UIColor.ypGreen.cgColor
-        }
+        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            
             self.showNextQuestionOrResults()
             self.image.layer.borderWidth = 0
         }
@@ -196,7 +178,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             myButtonYes?.isEnabled = true
         }
         
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer, myButtonYes: true, myButtonNo: false)
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
         
     }
     
@@ -215,6 +197,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             myButtonNo?.isEnabled = true
         }
         
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer, myButtonYes: false, myButtonNo: true)
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
 }

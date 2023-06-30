@@ -111,25 +111,26 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="OpY-uO-Eye">
-                                <rect key="frame" x="177" y="396" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="OpY-uO-Eye">
+                                <rect key="frame" x="177.5" y="343" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="dark"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="eZy-4U-gCt" secondAttribute="bottom" id="2QA-dd-0sp"/>
+                            <constraint firstItem="OpY-uO-Eye" firstAttribute="centerX" secondItem="Ntn-bw-SYO" secondAttribute="centerX" id="ALR-qF-edZ"/>
                             <constraint firstItem="OJk-aI-i9t" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="GoF-1o-c2n"/>
                             <constraint firstItem="OJk-aI-i9t" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="I6G-gT-Qcf"/>
+                            <constraint firstItem="OpY-uO-Eye" firstAttribute="centerY" secondItem="Ntn-bw-SYO" secondAttribute="centerY" id="Lsr-N7-BqN"/>
                             <constraint firstItem="eZy-4U-gCt" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="NGe-Sr-M9e"/>
                             <constraint firstItem="OJk-aI-i9t" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-20" id="Xea-5a-ar1"/>
                         </constraints>
                     </view>
                     <size key="freeformSize" width="375" height="812"/>
                     <connections>
-                        <outlet property="buttonNo" destination="r3o-bQ-w1o" id="Aa8-0T-4F0"/>
-                        <outlet property="buttonYes" destination="Leh-18-7ij" id="V0H-Jz-KZo"/>
+                        <outlet property="buttonNo" destination="r3o-bQ-w1o" id="k70-xf-PwT"/>
+                        <outlet property="buttonYes" destination="Leh-18-7ij" id="1mp-dG-Gfn"/>
                         <outlet property="counterL" destination="5Rs-Pi-ttB" id="HfF-I9-Sdg"/>
                         <outlet property="image" destination="Ntn-bw-SYO" id="wWI-nc-g3r"/>
                         <outlet property="loader" destination="OpY-uO-Eye" id="hXg-F5-tSo"/>

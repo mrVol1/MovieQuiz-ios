@@ -12,6 +12,7 @@ class QuestionFactory: QuestionFactoryProtocol  {
     private let moviesLoader: MoviesLoading
     private var delegate: QuestionFactoryDelegate?
     private var randomWord: String
+    private var alertError: AlertPresenterError?
     
     init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?, randomWord: String) {
         self.moviesLoader = moviesLoader
@@ -36,6 +37,10 @@ class QuestionFactory: QuestionFactoryProtocol  {
         }
     }
     
+    func showError(alertPresentError: Error) {
+        
+    }
+    
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
@@ -44,11 +49,25 @@ class QuestionFactory: QuestionFactoryProtocol  {
             guard let movie = self.movies[safe: index] else { return }
             
             var imageData = Data()
+            var alertError: Error?
             
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
-            } catch {
+            } catch let catchedError {
                 print("Failed to load image")
+                alertError = AlertModelError(title: "Error", message: "Data is not loaded. Please wait", buttonText: "Update") as! any Error
+            }
+            
+            DispatchQueue.main.async { [weak self] in
+                // Обработка imageData и error на главной очереди
+                guard let self = self else { return }
+                if let alertError = alertError {
+                    // Обработка ошибки
+                    self.showError(alertPresentError: alertError)
+                } else {
+                    // Обработка imageData
+                    self.processImageData(imageData)
+                }
             }
             
             let rating = Float(movie.rating) ?? 0

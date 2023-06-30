@@ -10,7 +10,7 @@ import UIKit
 
 protocol AlertPresenterError {
     
-    func showError (alertPresentError: AlertModelError)
+    func showImageError (alertPresentError: AlertModelError)
     
 }
 
@@ -26,17 +26,20 @@ final class AlertPresenterErrorImplementasion {
 
 extension AlertPresenterErrorImplementasion: AlertPresenterError {
     
-    func showError(alertPresentError: AlertModelError) {
-        let alertError = UIAlertController(
+    func showImageError(alertPresentError: AlertModelError) {
+        let alert = UIAlertController(
             title: alertPresentError.title,
             message: alertPresentError.message,
             preferredStyle: .alert)
         
         let action = UIAlertAction(title: alertPresentError.buttonText, style: .default) { _ in
+            
+            alertPresentError.completion()
+            
         }
+                        
+        alert.addAction(action)
         
-        alertError.addAction(action)
-        
-        viewControllerError?.present(alertError, animated: true)
+        viewControllerError?.present(alert, animated: true, completion: nil)
     }
 }

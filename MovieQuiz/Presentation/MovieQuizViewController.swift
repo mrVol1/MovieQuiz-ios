@@ -2,6 +2,7 @@ import UIKit
 
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
+    
     @IBOutlet weak private var image: UIImageView!
     @IBOutlet weak private var questionLable: UILabel!
     @IBOutlet weak private var counterL: UILabel!
@@ -23,6 +24,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var statisticService: StatisticService?
     private var dateTimeString: DateFormatter?
     private var randomWord = "больше"
+    private var alertPresenterError: AlertPresenterError?
 
     // MARK: - Lifecycle
         ///функция, для загрузки экрана в памяти
@@ -31,13 +33,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         alertPresent = AlertPresentImplementation(viewController: self)
         
+        alertPresenterError = AlertPresenterErrorImplementasion(viewControllerError: self)
+        
         image.layer.cornerRadius = 20
         
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self, randomWord: randomWord)
         
         statisticService = StatisticServiceImplementation()
 
-        showLoaderIndecator()
+        showLoadingIndicator()
         questionFactory?.loadData()
         
         self.loader.hidesWhenStopped = true
@@ -47,6 +51,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         /// функция, которая выводит ошибку, если она возникла при загрузке данных с сети
     func didFailToLoadData(with error: Error) {
         showNetworkError(message: error.localizedDescription)
+    }
+        ///метод отображения алерта при загрузке постера
+    func didFailToLoadImage() {
+        showImageLoadingError()
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -72,12 +80,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
         ///показывает лоадер
-    private func showLoaderIndecator() {
+    internal func showLoadingIndicator() {
         loader.hidesWhenStopped = true
         loader.startAnimating()
     }
         ///скрывает лоудер
-    private func hideLoadingIndicator () {
+    internal func hideLoadingIndicator () {
         loader.hidesWhenStopped = true
         loader.stopAnimating()
     }
@@ -88,9 +96,25 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         let model = AlertModel(title: "Ошибка",
                                message: message,
-                               buttonText: "Попробовать еще раз") {
+                               buttonText: "Попробовать еще раз")
+        {
             self.questionFactory?.loadData()
         }
+        alertPresent?.show(alertPresent: model)
+    }
+    
+    func showImageLoadingError() {
+        hideLoadingIndicator()
+        
+        let alert = AlertModelError(
+            title: "Ошибка загрузки изображения",
+            message: "Не удалось загрузить постер фильма",
+            buttonText: "Попробовать еще раз")
+            {
+                self.questionFactory?.loadData()
+            }
+        
+        alertPresenterError?.showImageError(alertPresentError: alert)
     }
     
     // MARK: - MainFunc

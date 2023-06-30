@@ -33,7 +33,6 @@
 		D7C6C2BD2A49AF93004D948D /* MoviesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C6C2BC2A49AF93004D948D /* MoviesLoader.swift */; };
 		D7C6C2C12A4ED9C1004D948D /* AlertModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C6C2C02A4ED9C1004D948D /* AlertModelError.swift */; };
 		D7C6C2C32A4EDA84004D948D /* AlertPresenterError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C6C2C22A4EDA84004D948D /* AlertPresenterError.swift */; };
-		D7C6C2C52A4EDE70004D948D /* ProcessImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C6C2C42A4EDE70004D948D /* ProcessImageData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,7 +64,6 @@
 		D7C6C2BC2A49AF93004D948D /* MoviesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesLoader.swift; sourceTree = "<group>"; };
 		D7C6C2C02A4ED9C1004D948D /* AlertModelError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModelError.swift; sourceTree = "<group>"; };
 		D7C6C2C22A4EDA84004D948D /* AlertPresenterError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenterError.swift; sourceTree = "<group>"; };
-		D7C6C2C42A4EDE70004D948D /* ProcessImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessImageData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,7 +84,6 @@
 				AD1ABAB72831907B00B3E448 /* Main.storyboard */,
 				D79645F62A39E307009C958D /* AlertPresenter.swift */,
 				D7C6C2C22A4EDA84004D948D /* AlertPresenterError.swift */,
-				D7C6C2C42A4EDE70004D948D /* ProcessImageData.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -263,7 +260,6 @@
 				D7C6C2C32A4EDA84004D948D /* AlertPresenterError.swift in Sources */,
 				AD1ABAB62831907B00B3E448 /* MovieQuizViewController.swift in Sources */,
 				D7C6C2B92A49714F004D948D /* NetworkClient.swift in Sources */,
-				D7C6C2C52A4EDE70004D948D /* ProcessImageData.swift in Sources */,
 				D79645EA2A39CB66009C958D /* QuizStepViewModel.swift in Sources */,
 				D79645EE2A39CB86009C958D /* QuizQuestion.swift in Sources */,
 				D79645E72A39C94C009C958D /* QuestionFactory.swift in Sources */,

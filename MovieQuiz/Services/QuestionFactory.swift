@@ -6,13 +6,15 @@
 //
 
 import Foundation
+import UIKit
 
 class QuestionFactory: QuestionFactoryProtocol  {
     
     private let moviesLoader: MoviesLoading
     private var delegate: QuestionFactoryDelegate?
     private var randomWord: String
-    private var alertError: AlertPresenterError?
+    private var imageLoadingDelegate: QuestionFactoryDelegate?
+    private var movies: [MostPopularMovie] = []
     
     init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?, randomWord: String) {
         self.moviesLoader = moviesLoader
@@ -20,25 +22,26 @@ class QuestionFactory: QuestionFactoryProtocol  {
         self.randomWord = randomWord
     }
     
-    private var movies: [MostPopularMovie] = []
-    
     func loadData() {
+        delegate?.showLoadingIndicator()
         moviesLoader.loadMovies { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 switch result {
                 case .success(let mostPopularMovies):
-                    self.movies = mostPopularMovies.items
-                    self.delegate?.didLoadDataFromServer()
+                    if mostPopularMovies.items.isEmpty {
+                        let errorMessage = mostPopularMovies.errorMessage
+                        let error = NSError(domain: "https://imdb-api.com/en/API/Top250Movies/k_37bm4xsb", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                        self.delegate?.didFailToLoadData(with: error)
+                    } else {
+                        self.movies = mostPopularMovies.items
+                        self.delegate?.didLoadDataFromServer()
+                    }
                 case .failure(let error):
                     self.delegate?.didFailToLoadData(with: error)
                 }
             }
         }
-    }
-    
-    func showError(alertPresentError: Error) {
-        
     }
     
     func requestNextQuestion() {
@@ -49,25 +52,14 @@ class QuestionFactory: QuestionFactoryProtocol  {
             guard let movie = self.movies[safe: index] else { return }
             
             var imageData = Data()
-            var alertError: Error?
             
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
-            } catch let catchedError {
-                print("Failed to load image")
-                alertError = AlertModelError(title: "Error", message: "Data is not loaded. Please wait", buttonText: "Update") as! any Error
-            }
-            
-            DispatchQueue.main.async { [weak self] in
-                // Обработка imageData и error на главной очереди
-                guard let self = self else { return }
-                if let alertError = alertError {
-                    // Обработка ошибки
-                    self.showError(alertPresentError: alertError)
-                } else {
-                    // Обработка imageData
-                    self.processImageData(imageData)
+            } catch {
+                DispatchQueue.main.async { [weak self] in
+                    self?.showImageLoadingError()
                 }
+                return
             }
             
             let rating = Float(movie.rating) ?? 0
@@ -96,9 +88,18 @@ class QuestionFactory: QuestionFactoryProtocol  {
             
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
+                self.delegate?.hideLoadingIndicator()
                 self.delegate?.didReceiveNextQuestion(question: question)
             }
         }
+    }
+    
+    func showImageLoadingError() {
+        delegate?.showImageLoadingError()
+    }
+    
+    private func handleNextQuestionLoaded() {
+        delegate?.hideLoadingIndicator()
     }
 }
 

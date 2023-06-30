@@ -37,5 +37,6 @@ struct NetworkClient {
         }
         
         task.resume()
+        
     }
 }

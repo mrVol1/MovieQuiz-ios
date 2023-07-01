@@ -25,6 +25,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var dateTimeString: DateFormatter?
     private var randomWord = "больше"
     private var alertPresenterError: AlertPresenterError?
+    private var myButtonYes: UIButton?
+    private var myButtonNo: UIButton?
 
     // MARK: - Lifecycle
         ///функция, для загрузки экрана в памяти
@@ -46,6 +48,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         self.loader.hidesWhenStopped = true
         
+        myButtonYes = buttonYes as UIButton?
+        myButtonNo = buttonNo as UIButton?
+        
     }
     
         /// функция, которая выводит ошибку, если она возникла при загрузке данных с сети
@@ -66,7 +71,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         currentQuestion = question
         let viewModel = convert(model: question)
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async
+        { [weak self] in
             self?.show(quiz: viewModel)
         }
     }
@@ -91,18 +97,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     // MARK: - Show Alert Error for Data Response
-    private func showNetworkError(message: String) {
-        hideLoadingIndicator()
-        
-        let model = AlertModel(title: "Ошибка",
-                               message: message,
-                               buttonText: "Попробовать еще раз")
-        {
-            self.questionFactory?.loadData()
-        }
-        alertPresent?.show(alertPresent: model)
-    }
-    
     func showImageLoadingError() {
         hideLoadingIndicator()
         
@@ -110,11 +104,22 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             title: "Ошибка загрузки изображения",
             message: "Не удалось загрузить постер фильма",
             buttonText: "Попробовать еще раз")
-            {
-                self.questionFactory?.loadData()
-            }
-        
+        { [weak self] in
+            self?.questionFactory?.loadData()
+        }
         alertPresenterError?.showImageError(alertPresentError: alert)
+    }
+    
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText: "Попробовать еще раз")
+        { [weak self] in
+            self?.questionFactory?.loadData()
+        }
+        alertPresent?.show(alertPresent: model)
     }
     
     // MARK: - MainFunc
@@ -141,6 +146,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
         }
+        myButtonYes?.isEnabled = true
+        myButtonNo?.isEnabled = true
     }
     
         ///функция, которая выводит результат ответа (правильно или неправильно ответил)
@@ -158,6 +165,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             self.showNextQuestionOrResults()
             self.image.layer.borderWidth = 0
         }
+        myButtonYes?.isEnabled = false
+        myButtonNo?.isEnabled = false
     }
     
         /// функция, которая показывает результат квиза
@@ -194,14 +203,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
         let givenAnswer = true
         
-        let myButtonYes = buttonYes as UIButton?
-        myButtonYes?.isEnabled = false
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
-        {
-            myButtonYes?.isEnabled = true
-        }
-        
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
         
     }
@@ -212,14 +213,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             return
         }
         let givenAnswer = false
-        
-        let myButtonNo = buttonNo as UIButton?
-        myButtonNo?.isEnabled = false
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000))
-        {
-            myButtonNo?.isEnabled = true
-        }
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }

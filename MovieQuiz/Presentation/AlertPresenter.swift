@@ -9,9 +9,7 @@ import Foundation
 import UIKit
 
 protocol AlertPresent {
-    
     func show (alertPresent: AlertModel)
-    
 }
 
 final class AlertPresentImplementation {
@@ -24,21 +22,16 @@ final class AlertPresentImplementation {
 }
 
 extension AlertPresentImplementation: AlertPresent {
-    
     func show(alertPresent: AlertModel) {
         let alert = UIAlertController(
             title: alertPresent.title,
             message: alertPresent.message,
             preferredStyle: .alert)
-        
         let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { _ in
 
             alertPresent.completion()
-            
         }
-        
         alert.addAction(action)
-        
         viewController?.present(alert, animated: true)
     }
 }

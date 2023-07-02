@@ -7,16 +7,13 @@
 
 import Foundation
 
-
 struct GameRecord: Codable {
-    let correct: Int //количество правильных ответов
+    let correct: Int // количество правильных ответов
     let total: Int // сколько всего было ответов
     let date: Date // дата
-    
 }
 
 extension GameRecord: Comparable {
-    
     private var accuracy: Double {
         guard total != 0 else {
             return 0

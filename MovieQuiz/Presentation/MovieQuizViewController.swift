@@ -32,7 +32,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         alertPresent = AlertPresentImplementation(viewController: self)
         alertPresenterError = AlertPresenterErrorImplementasion(viewControllerError: self)
         image.layer.cornerRadius = 20
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self, randomWord: randomWord)
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)), delegate: self, randomWord: randomWord)
         statisticService = StatisticServiceImplementation()
 
         showLoadingIndicator()

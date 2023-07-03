@@ -11,13 +11,10 @@ struct NetworkClient {
     private enum NetworkError: Error {
         case codeError
     }
-    
     private let apiKey: String
-    
     init(apiKey: String) {
         self.apiKey = apiKey
     }
-    
     func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
         var request = URLRequest(url: url)
         request.addValue(apiKey, forHTTPHeaderField: "X-API-KEY")

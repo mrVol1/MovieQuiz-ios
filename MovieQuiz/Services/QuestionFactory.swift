@@ -52,7 +52,6 @@ class QuestionFactory: QuestionFactoryProtocol {
             let index = (0..<self.movies.count).randomElement() ?? 0
             guard let movie = self.movies[safe: index] else { return }
             var imageData = Data()
-            do {
                 if let imageUrl = URL(string: movie.poster.url), let data = try? Data(contentsOf: imageUrl) {
                     imageData = data
                 } else {
@@ -62,13 +61,6 @@ class QuestionFactory: QuestionFactoryProtocol {
                     }
                     return
                 }
-            }
-            catch {
-                DispatchQueue.main.async { [weak self] in
-                    self?.showImageLoadingError()
-                }
-                return
-            }
             let ratingString = String(movie.rating.imdb)
             let random = Int.random(in: 1..<10)
             func randomWordComparison () -> String {

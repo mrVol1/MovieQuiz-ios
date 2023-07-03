@@ -147,12 +147,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
         let message =
             """
-            Ваш результат: \(correctAnswers)/10,
-            \n Количество сыгранных квизов: \(statisticService.gamesCount),
-            \n Рекорд: \(statisticService.bestGame?.correct ?? 0)/10
-            (\( (statisticService.bestGame?.date.dateTimeString) ?? "Ошибка времени")),
-            \n Средняя точность \(String(format: "%.2f", statisticService.totalAccuracy))
- """
+    Ваш результат: \(correctAnswers)/10,
+    Количество сыгранных квизов: \(statisticService.gamesCount),
+    Рекорд: \(statisticService.bestGame?.correct ?? 0)/10 (\((statisticService.bestGame?.date.dateTimeString) ?? "Ошибка времени")),
+    Средняя точность \(String(format: "%.2f", statisticService.totalAccuracy))
+"""
         let viewModel = AlertModel(
             title: "Этот раунд окончен!",
             message: message,

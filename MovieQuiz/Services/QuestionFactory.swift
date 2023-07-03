@@ -10,14 +10,14 @@ import UIKit
 
 class QuestionFactory: QuestionFactoryProtocol {
     private let moviesLoader: MoviesLoading
-    private var delegate: QuestionFactoryDelegate?
     private var randomWord: String
     private var imageLoadingDelegate: QuestionFactoryDelegate?
-    private var movies: [MostPopularMovie] = []
+    private var movies: [Movie] = []
+    internal weak var delegate: QuestionFactoryDelegate?
     init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?, randomWord: String) {
         self.moviesLoader = moviesLoader
-        self.delegate = delegate
         self.randomWord = randomWord
+        self.delegate = delegate
     }
     func loadData() {
         delegate?.showLoadingIndicator()
@@ -26,18 +26,17 @@ class QuestionFactory: QuestionFactoryProtocol {
                 guard let self = self else { return }
                 switch result {
                 case .success(let mostPopularMovies):
-                    if mostPopularMovies.items.isEmpty {
-                        let errorMessage = mostPopularMovies.errorMessage
+                    let movies = mostPopularMovies.movies
+                    if movies.isEmpty {
                         let error = NSError(
-                            domain: "https://imdb-api.com/en/API/Top250Movies/k_37bm4xsb",
-                            code: 0,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: errorMessage
-                                      ]
+                            domain:
+                                "https://api.kinopoisk.dev/v1.3/movie?selectFields=name&selectFields=rating.imdb&selectFields=poster.url&page=1&limit=10",
+                            code: 0
+
                         )
                         self.delegate?.didFailToLoadData(with: error)
                     } else {
-                        self.movies = mostPopularMovies.items
+                        self.movies = movies
                         self.delegate?.didLoadDataFromServer()
                     }
                 case .failure(let error):
@@ -46,6 +45,7 @@ class QuestionFactory: QuestionFactoryProtocol {
             }
         }
     }
+
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
@@ -53,14 +53,23 @@ class QuestionFactory: QuestionFactoryProtocol {
             guard let movie = self.movies[safe: index] else { return }
             var imageData = Data()
             do {
-                imageData = try Data(contentsOf: movie.resizedImageURL)
-            } catch {
+                if let imageUrl = URL(string: movie.poster.url), let data = try? Data(contentsOf: imageUrl) {
+                    imageData = data
+                } else {
+                    // Если загрузка изображения не удалась, показываем ошибку
+                    DispatchQueue.main.async { [weak self] in
+                        self?.showImageLoadingError()
+                    }
+                    return
+                }
+            }
+            catch {
                 DispatchQueue.main.async { [weak self] in
                     self?.showImageLoadingError()
                 }
                 return
             }
-            let rating = Float(movie.rating) ?? 0
+            let ratingString = String(movie.rating.imdb)
             let random = Int.random(in: 1..<10)
             func randomWordComparison () -> String {
                 let wordMore = "больше"
@@ -74,7 +83,7 @@ class QuestionFactory: QuestionFactoryProtocol {
             }
             let randomWordMoreOrLess = randomWordComparison()
             let text = "Рейтинг этого фильма \(randomWordMoreOrLess) чем \(random)?"
-            let correctAnswer = Int(rating) > random
+            let correctAnswer = Int(ratingString) ?? 0 > random
             let question = QuizQuestion(image: imageData,
                                         text: text,
                                         correctAnswer: correctAnswer)

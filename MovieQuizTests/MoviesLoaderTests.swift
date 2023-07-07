@@ -13,14 +13,12 @@ class MoviesLoaderTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        expectation = expectation(description: "Loading expectation")
+        expectation = XCTestExpectation(description: "Loading expectation")
     }
-
     override func tearDown() {
         expectation = nil
         super.tearDown()
     }
-
     func testSuccessLoading() throws {
         // Given
         let stubNetworkClient = StubNetworkClient(emulateError: false)
@@ -38,22 +36,29 @@ class MoviesLoaderTests: XCTestCase {
         }
         waitForExpectations(timeout: 2)
     }
-
     func testErrorLoading() throws {
         // Given
         let stubNetworkClient = StubNetworkClient(emulateError: true)
         let loader = MoviesLoader(stubNetworkClient: stubNetworkClient)
         // When
+        var loadingError: Error?
+        // Create the expectation using `self.expectation(description:)`
+        let errorExpectation = self.expectation(description: "Error expectation")
         loader.loadMovies { result in
             // Then
             switch result {
             case .failure(let error):
-                XCTAssertNotNil(error)
-                self.expectation.fulfill()
+                loadingError = error
             case .success(_):
-                XCTFail("Unexpected success")
+                loadingError = nil
             }
+            // Fulfill the expectation inside the completion block
+            errorExpectation.fulfill()
         }
+        // Wait for the expectation to be fulfilled
         waitForExpectations(timeout: 5)
+        if let error = loadingError {
+            XCTFail("Unexpected success with error: \(error)")
+        }
     }
 }

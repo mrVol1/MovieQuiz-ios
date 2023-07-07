@@ -14,10 +14,12 @@ protocol MoviesLoading {
 struct MoviesLoader: MoviesLoading {
     // constant
     static let apiKey = "2YXG5TW-638MY4H-M1V53M4-E66MHQE"
-    private let networkClient: StubNetworkClient
+    private let stubNetworkClient: StubNetworkClient
+    private let networkClient: NetworkClient
     // init networkClient
-    init(networkClient: StubNetworkClient = StubNetworkClient(emulateError: false)) {
+    init(networkClient: NetworkClient = NetworkClient(apiKey: apiKey), stubNetworkClient: StubNetworkClient = StubNetworkClient(emulateError: false)) {
         self.networkClient = networkClient
+        self.stubNetworkClient = stubNetworkClient
     }
 
     func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void) {

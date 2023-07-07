@@ -9,34 +9,51 @@ import XCTest
 @testable import MovieQuiz
 
 class MoviesLoaderTests: XCTestCase {
+    var expectation: XCTestExpectation!
+
+    override func setUp() {
+        super.setUp()
+        expectation = expectation(description: "Loading expectation")
+    }
+
+    override func tearDown() {
+        expectation = nil
+        super.tearDown()
+    }
+
     func testSuccessLoading() throws {
         // Given
-        let stubNetworkClient = StubNetworkClient(emulateError: false) // говорим, что не хотим эмулировать ошибку
-        let loader = MoviesLoader(networkClient: stubNetworkClient)
-        
+        let stubNetworkClient = StubNetworkClient(emulateError: false)
+        let loader = MoviesLoader(stubNetworkClient: stubNetworkClient)
         // When
-        let expectation = expectation(description: "Loading expectation")
-        
         loader.loadMovies { result in
             // Then
             switch result {
             case .success(let movies):
-                // давайте проверим, что пришло, например, два фильма — ведь в тестовых данных их всего два
                 XCTAssertEqual(movies.movies.count, 250)
-                expectation.fulfill()
-            case .failure(_):
-                XCTFail("Unexpected failure")
+                self.expectation.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected failure: \(error)")
             }
         }
         waitForExpectations(timeout: 2)
     }
-    
+
     func testErrorLoading() throws {
         // Given
-        
+        let stubNetworkClient = StubNetworkClient(emulateError: true)
+        let loader = MoviesLoader(stubNetworkClient: stubNetworkClient)
         // When
-        
-        // Then
+        loader.loadMovies { result in
+            // Then
+            switch result {
+            case .failure(let error):
+                XCTAssertNotNil(error)
+                self.expectation.fulfill()
+            case .success(_):
+                XCTFail("Unexpected success")
+            }
+        }
+        waitForExpectations(timeout: 5)
     }
 }
-

@@ -28,10 +28,10 @@ extension AlertPresentImplementation: AlertPresent {
             message: alertPresent.message,
             preferredStyle: .alert)
         let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { _ in
-
             alertPresent.completion()
         }
         alert.addAction(action)
         viewController?.present(alert, animated: true)
+        alert.view?.accessibilityIdentifier = "Game results"
     }
 }

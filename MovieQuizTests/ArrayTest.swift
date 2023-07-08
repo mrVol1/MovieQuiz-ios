@@ -11,20 +11,18 @@ import XCTest
 class ArrayTest: XCTestCase {
     func testGetValueInRange() {
         // Given
-        let array = [1,1,2,3,5]
+        let array = [1, 1, 2, 3, 5]
         // When
         let value = array[safe: 2]
-        //Then
-        XCTAssertNil(value)
+        // Then
         XCTAssertEqual(value, 2)
     }
-    
     func testGetValueOutOfRange() {
         // Given
-        let array = [1,1,2,3,5]
+        let array = [1, 1, 2, 3, 5]
         // When
         let value = array[safe: 20]
-        //Then
+        // Then
         XCTAssertNil(value)
     }
 }

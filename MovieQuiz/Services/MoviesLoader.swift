@@ -12,10 +12,14 @@ protocol MoviesLoading {
 }
 
 struct MoviesLoader: MoviesLoading {
+    // constant
     static let apiKey = "2YXG5TW-638MY4H-M1V53M4-E66MHQE"
+    private let stubNetworkClient: StubNetworkClient
     private let networkClient: NetworkClient
-    init(networkClient: NetworkClient) {
+    // init networkClient
+    init(networkClient: NetworkClient = NetworkClient(apiKey: apiKey), stubNetworkClient: StubNetworkClient = StubNetworkClient(emulateError: false)) {
         self.networkClient = networkClient
+        self.stubNetworkClient = stubNetworkClient
     }
 
     func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void) {
@@ -25,7 +29,7 @@ struct MoviesLoader: MoviesLoading {
                     )!,
                                  timeoutInterval: Double.infinity)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("2YXG5TW-638MY4H-M1V53M4-E66MHQE", forHTTPHeaderField: "X-API-KEY")
+        request.addValue(MoviesLoader.apiKey, forHTTPHeaderField: "X-API-KEY")
         request.httpMethod = "GET"
         let task = URLSession.shared.dataTask(with: request) { data, response, error
             in guard let data = data else {

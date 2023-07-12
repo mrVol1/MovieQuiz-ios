@@ -15,8 +15,8 @@ final class MovieQuizPresenter {
     private var currentQuestionIndex = 0
     let questionsAmount: Int = 10
     var questionFactory: QuestionFactoryProtocol?
-    private var myButtonYes: UIButton?
-    private var myButtonNo: UIButton?
+    var myButtonYes: UIButton?
+    var myButtonNo: UIButton?
     var alertPresent: AlertPresent?
     var statisticService: StatisticService?
     // MARK: - Main Func

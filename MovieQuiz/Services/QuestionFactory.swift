@@ -32,7 +32,7 @@ class QuestionFactory: QuestionFactoryProtocol {
                             domain:
                                 "https://api.kinopoisk.dev/v1.3/movie?selectFields=name&selectFields=rating.imdb&selectFields=poster.url&page=1&limit=10",
                             code: 0
-
+                            
                         )
                         self.delegate?.didFailToLoadData(with: error)
                     } else {
@@ -45,25 +45,23 @@ class QuestionFactory: QuestionFactoryProtocol {
             }
         }
     }
-
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             let index = (0..<self.movies.count).randomElement() ?? 0
             guard let movie = self.movies[safe: index] else { return }
             var imageData = Data()
-                if let imageUrl = URL(string: movie.poster.url), let data = try? Data(contentsOf: imageUrl) {
-                    imageData = data
-                } else {
-                    // Если загрузка изображения не удалась, показываем ошибку
-                    DispatchQueue.main.async { [weak self] in
-                        self?.showImageLoadingError()
-                    }
-                    return
+            if let imageUrl = URL(string: movie.poster.url), let data = try? Data(contentsOf: imageUrl) {
+                imageData = data
+            } else {
+                DispatchQueue.main.async { [weak self] in
+                    self?.showImageLoadingError()
                 }
+                return
+            }
             let ratingString = String(movie.rating.imdb)
             let random = Int.random(in: 1..<10)
-            func randomWordComparison () -> String {
+            func randomWordComparison() -> String {
                 let wordMore = "больше"
                 let wordLess = "меньше"
                 if self.randomWord == wordMore {
@@ -76,17 +74,15 @@ class QuestionFactory: QuestionFactoryProtocol {
             let randomWordMoreOrLess = randomWordComparison()
             let text = "Рейтинг этого фильма \(randomWordMoreOrLess) чем \(random)?"
             let correctAnswer = Int(ratingString) ?? 0 > random
-            let question = QuizQuestion(image: imageData,
-                                        text: text,
-                                        correctAnswer: correctAnswer)
+            let question = QuizQuestion(image: imageData, text: text, correctAnswer: correctAnswer)
+            self.delegate?.didReceiveNextQuestion(question: question)
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.delegate?.hideLoadingIndicator()
-                self.delegate?.didReceiveNextQuestion(question: question)
             }
         }
     }
-    func showImageLoadingError() {
+    private func showImageLoadingError() {
         delegate?.showImageLoadingError()
     }
     private func handleNextQuestionLoaded() {

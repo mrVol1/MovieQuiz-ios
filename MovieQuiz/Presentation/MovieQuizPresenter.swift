@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
+enum Answer {
+    case yes
+    case no
+}
+
 final class MovieQuizPresenter {
     var currentQuestion: QuizQuestion?
     weak var viewController: MovieQuizViewController?
@@ -15,10 +20,10 @@ final class MovieQuizPresenter {
     private var currentQuestionIndex = 0
     let questionsAmount: Int = 10
     var questionFactory: QuestionFactoryProtocol?
-    var myButtonYes: UIButton?
-    var myButtonNo: UIButton?
     var alertPresent: AlertPresent?
     var statisticService: StatisticService?
+    private var isButtonYesEnabled = true
+    private var isButtonNoEnabled = true
     // MARK: - Main Func
     /// функции для представления currentQuestionIndex и questionsAmount в других слоях
     func itLastQuestion() -> Bool {
@@ -55,8 +60,9 @@ final class MovieQuizPresenter {
                 self?.questionFactory?.requestNextQuestion()
             }
         }
-        myButtonYes?.isEnabled = true
-        myButtonNo?.isEnabled = true
+        isButtonYesEnabled = true
+        isButtonNoEnabled = true
+        viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
     }
     /// функция, которая показывает результат квиза
     func showQuizResult() {
@@ -84,6 +90,9 @@ final class MovieQuizPresenter {
         )
         alertPresent?.show(alertPresent: viewModel)
     }
+    func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
+        viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
+    }
     // MARK: - QuestionFactoryDelegate
     /// метод делегата
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -100,16 +109,32 @@ final class MovieQuizPresenter {
     /// Кнопка да
     func buttonYes() {
         didAnswer(isYes: true)
+        isButtonYesEnabled = false
+        isButtonNoEnabled = false
+        viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
     }
     /// Кнопка нет
     func buttonNo() {
         didAnswer(isYes: false)
+        isButtonYesEnabled = false
+        isButtonNoEnabled = false
+        viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
     }
     private func didAnswer(isYes: Bool) {
         guard let currentQuestion = currentQuestion else {
             return
         }
-        let givenAnswer = isYes
-        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        let givenAnswer: Answer = isYes ? .yes : .no
+        let isCorrect: Bool
+        switch currentQuestion.correctAnswer {
+        case .yes:
+            isCorrect = givenAnswer == .yes
+        case .no:
+            isCorrect = givenAnswer == .no
+        }
+        if isCorrect {
+            correctAnswers += 1
+        }
+        viewController?.showAnswerResult(isCorrect: isCorrect)
     }
 }

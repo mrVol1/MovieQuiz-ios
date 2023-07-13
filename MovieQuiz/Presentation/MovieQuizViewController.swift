@@ -114,6 +114,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     func showQuizResult() {
         presenter.showQuizResult()
     }
+    /// функция для отображения состояния кнопок
+    func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.buttonYes.isEnabled = isButtonYesEnabled
+            self?.buttonNo.isEnabled = isButtonNoEnabled
+        }
+    }
     // MARK: - ButtonsView
     @IBAction private func buttonYes(_ sender: UIButton) {
         presenter.buttonYes()

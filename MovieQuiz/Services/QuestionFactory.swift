@@ -73,7 +73,7 @@ class QuestionFactory: QuestionFactoryProtocol {
             }
             let randomWordMoreOrLess = randomWordComparison()
             let text = "Рейтинг этого фильма \(randomWordMoreOrLess) чем \(random)?"
-            let correctAnswer = Int(ratingString) ?? 0 > random
+            let correctAnswer = Int(ratingString) ?? 0 > random ? Answer.yes : Answer.no
             let question = QuizQuestion(image: imageData, text: text, correctAnswer: correctAnswer)
             self.delegate?.didReceiveNextQuestion(question: question)
             DispatchQueue.main.async { [weak self] in

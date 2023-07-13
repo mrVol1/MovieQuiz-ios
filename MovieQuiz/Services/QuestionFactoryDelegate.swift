@@ -14,4 +14,5 @@ protocol QuestionFactoryDelegate: AnyObject {
     func showLoadingIndicator()
     func hideLoadingIndicator()
     func showImageLoadingError()
+    func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool)
 }

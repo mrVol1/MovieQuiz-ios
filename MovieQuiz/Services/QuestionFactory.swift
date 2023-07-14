@@ -32,7 +32,6 @@ class QuestionFactory: QuestionFactoryProtocol {
                             domain:
                                 "https://api.kinopoisk.dev/v1.3/movie?selectFields=name&selectFields=rating.imdb&selectFields=poster.url&page=1&limit=10",
                             code: 0
-                            
                         )
                         self.delegate?.didFailToLoadData(with: error)
                     } else {
@@ -60,6 +59,7 @@ class QuestionFactory: QuestionFactoryProtocol {
                 return
             }
             let ratingString = String(movie.rating.imdb)
+            print(ratingString)
             let random = Int.random(in: 1..<10)
             func randomWordComparison() -> String {
                 let wordMore = "больше"
@@ -73,7 +73,14 @@ class QuestionFactory: QuestionFactoryProtocol {
             }
             let randomWordMoreOrLess = randomWordComparison()
             let text = "Рейтинг этого фильма \(randomWordMoreOrLess) чем \(random)?"
-            let correctAnswer = Int(ratingString) ?? 0 > random ? Answer.yes : Answer.no
+            let correctAnswer: Answer
+            if randomWordMoreOrLess == "больше" {
+                correctAnswer = Int(ratingString) ?? 0 > random ? .not : .yes
+            } else if randomWordMoreOrLess == "меньше" {
+                correctAnswer = Int(ratingString) ?? 0 < random ? .not : .yes
+            } else {
+                correctAnswer = .not
+            }
             let question = QuizQuestion(image: imageData, text: text, correctAnswer: correctAnswer)
             self.delegate?.didReceiveNextQuestion(question: question)
             DispatchQueue.main.async { [weak self] in

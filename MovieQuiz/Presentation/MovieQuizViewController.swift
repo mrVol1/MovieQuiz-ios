@@ -8,20 +8,14 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak private var buttonYes: UIButton!
     @IBOutlet weak private var buttonNo: UIButton!
     /// приватные переменные
-    private var totalAccuracy: StatisticService?
-    private var gamesCount: StatisticService?
-    private var bestGame: StatisticService?
-    private var questionFactory: QuestionFactoryProtocol?
-    private var alertPresent: AlertPresent?
-    private var statisticService: StatisticService?
-    private var dateTimeString: DateFormatter?
-    private var alertPresenterError: AlertPresenterError?
     private var presenter: MovieQuizPresenter?
+    private var alertPresent: AlertPresent?
     // MARK: - Lifecycle
     /// функция, для загрузки экрана в памяти
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter = MovieQuizPresenter(viewController: self)
+        let alertPresent = AlertPresentImplementation(viewController: self)
+        presenter = MovieQuizPresenter(viewController: self, statisticServiceFactory: StatisticServiceFactory(), alertPresent: alertPresent)
     }
     // MARK: - Loader Indicator
     /// показывает лоадер

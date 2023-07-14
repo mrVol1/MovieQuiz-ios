@@ -10,27 +10,29 @@ import UIKit
 
 enum Answer {
     case yes
-    case no
+    case not
 }
 
 final class MovieQuizPresenter: QuestionFactoryDelegate {
     weak var viewController: MovieQuizViewController?
-    let questionsAmount: Int = 10
-    var currentQuestion: QuizQuestion?
-    var correctAnswers: Int = 0
-    var questionFactory: QuestionFactoryProtocol?
-    var alertPresent: AlertPresent?
-    var alertPresenterError: AlertPresenterError?
-    var statisticService: StatisticService?
+    private let questionsAmount: Int = 10
+    private var currentQuestion: QuizQuestion?
+    private var correctAnswers: Int = 0
+    private var questionFactory: QuestionFactoryProtocol?
+    private var alertPresent: AlertPresent?
+    private var alertPresenterError: AlertPresenterError?
+    private var statisticService: StatisticService?
     private var currentQuestionIndex = 0
     private var isButtonYesEnabled = true
     private var isButtonNoEnabled = true
     private var randomWord = "больше"
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewController, statisticServiceFactory: StatisticServiceFactory, alertPresent: AlertPresent) {
         self.viewController = viewController
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)), delegate: self, randomWord: randomWord)
-        questionFactory?.loadData()
-        viewController.showLoadingIndicator()
+        self.questionFactory = QuestionFactory(moviesLoader: MoviesLoader(networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)), delegate: self, randomWord: randomWord)
+        self.questionFactory?.loadData()
+        self.viewController?.showLoadingIndicator()
+        self.statisticService = statisticServiceFactory.makeStaticService()
+        self.alertPresent = alertPresent
     }
     // MARK: - Loader Indicator
     /// показывает лоадер
@@ -111,7 +113,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     /// функция, которая показывает результат квиза
     func showQuizResult() {
-        statisticService?.store(correct: correctAnswers, total: self.questionsAmount)
+        statisticService?.store(correct: correctAnswers, total: questionsAmount)
         guard let statisticService = statisticService else {
             assertionFailure("Ошибка игры")
             return
@@ -135,6 +137,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         )
         alertPresent?.show(alertPresent: viewModel)
     }
+    /// метод для определения состояния кнопки
     func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
         viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
     }
@@ -186,20 +189,16 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         isButtonNoEnabled = false
         viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
     }
-    private func didAnswer(isYes: Bool) {
+    func didAnswer(isYes: Bool) {
         guard let currentQuestion = currentQuestion else {
             return
         }
-        let givenAnswer: Answer = isYes ? .yes : .no
+        let givenAnswer: Answer = isYes ? .yes : .not
         let isCorrect: Bool
-        switch currentQuestion.correctAnswer {
-        case .yes:
-            isCorrect = givenAnswer == .yes
-        case .no:
-            isCorrect = givenAnswer == .no
-        }
-        if isCorrect {
-            correctAnswers += 1
+        if givenAnswer == currentQuestion.correctAnswer {
+            isCorrect = true
+        } else {
+            isCorrect = false
         }
         viewController?.showAnswerResult(isCorrect: isCorrect)
     }

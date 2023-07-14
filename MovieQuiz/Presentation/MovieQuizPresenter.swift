@@ -13,18 +13,66 @@ enum Answer {
     case no
 }
 
-final class MovieQuizPresenter {
-    var currentQuestion: QuizQuestion?
+final class MovieQuizPresenter: QuestionFactoryDelegate {
     weak var viewController: MovieQuizViewController?
-    var correctAnswers: Int = 0
-    private var currentQuestionIndex = 0
     let questionsAmount: Int = 10
+    var currentQuestion: QuizQuestion?
+    var correctAnswers: Int = 0
     var questionFactory: QuestionFactoryProtocol?
     var alertPresent: AlertPresent?
+    var alertPresenterError: AlertPresenterError?
     var statisticService: StatisticService?
+    private var currentQuestionIndex = 0
     private var isButtonYesEnabled = true
     private var isButtonNoEnabled = true
+    private var randomWord = "больше"
+    
+    init(viewController: MovieQuizViewController) {
+        self.viewController = viewController
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)), delegate: self, randomWord: randomWord)
+        questionFactory?.loadData()
+        viewController.showLoadingIndicator()
+    }
+    // MARK: - Loader Indicator
+    /// показывает лоадер
+    internal func showLoadingIndicator() {
+        viewController?.loader.hidesWhenStopped = true
+        viewController?.loader.startAnimating()
+    }
+    /// скрывает лоудер
+    internal func hideLoadingIndicator () {
+        viewController?.loader.hidesWhenStopped = true
+        viewController?.loader.stopAnimating()
+    }
+    // MARK: - QuestionFactoryDelegate
+    
+    func didLoadDataFromServer() {
+        viewController?.hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        let message = error.localizedDescription
+        viewController?.showNetworkError(message: message)
+    }
+    
+    func didRecieveNextQuestion(question: QuizQuestion?) {
+        guard let question = question else {
+            return
+        }
+        
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        DispatchQueue.main.async { [weak self] in
+            self?.viewController?.show(quiz: viewModel)
+        }
+    }
     // MARK: - Main Func
+    func restartGame() {
+        currentQuestionIndex = 0
+        correctAnswers = 0
+        questionFactory?.requestNextQuestion()
+    }
     /// функции для представления currentQuestionIndex и questionsAmount в других слоях
     func itLastQuestion() -> Bool {
         currentQuestionIndex == questionsAmount - 1
@@ -93,6 +141,39 @@ final class MovieQuizPresenter {
     func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
         viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
     }
+    /// функция, которая выводит результат ответа (правильно или неправильно ответил)
+    func showAnswerResult(isCorrect: Bool) {
+        if isCorrect {
+            correctAnswers += 1
+        }
+        viewController?.image.layer.masksToBounds = true
+        viewController?.image.layer.borderWidth = 8
+        viewController?.image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.showNextQuestionOrResults()
+            self.viewController?.image.layer.borderWidth = 0
+        }
+    }
+    /// метод показывающий, что произошла ошибка в сети
+    func showNetworkError(message: String) {
+        viewController?.hideLoadingIndicator()
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText: "Попробовать еще раз") { [weak self] in self?.restartGame()
+        }
+        alertPresent?.show(alertPresent: model)
+    }
+    func showImageLoadingError() {
+        viewController?.hideLoadingIndicator()
+        let alert = AlertModelError(
+            title: "Ошибка загрузки изображения",
+            message: "Не удалось загрузить постер фильма",
+            buttonText: "Попробовать еще раз") { [weak self] in
+                self?.restartGame()
+            }
+        alertPresenterError?.showImageError(alertPresentError: alert)
+    }
     // MARK: - QuestionFactoryDelegate
     /// метод делегата
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -138,3 +219,5 @@ final class MovieQuizPresenter {
         viewController?.showAnswerResult(isCorrect: isCorrect)
     }
 }
+
+

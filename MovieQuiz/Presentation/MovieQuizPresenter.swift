@@ -26,7 +26,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private var isButtonYesEnabled = true
     private var isButtonNoEnabled = true
     private var randomWord = "больше"
-    
     init(viewController: MovieQuizViewController) {
         self.viewController = viewController
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)), delegate: self, randomWord: randomWord)
@@ -45,22 +44,20 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.loader.stopAnimating()
     }
     // MARK: - QuestionFactoryDelegate
-    
     func didLoadDataFromServer() {
         viewController?.hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
     }
-    
     func didFailToLoadData(with error: Error) {
         let message = error.localizedDescription
         viewController?.showNetworkError(message: message)
     }
-    
-    func didRecieveNextQuestion(question: QuizQuestion?) {
+    // MARK: - QuestionFactoryDelegate
+    /// метод делегата
+    func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else {
             return
         }
-        
         currentQuestion = question
         let viewModel = convert(model: question)
         DispatchQueue.main.async { [weak self] in
@@ -174,18 +171,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             }
         alertPresenterError?.showImageError(alertPresentError: alert)
     }
-    // MARK: - QuestionFactoryDelegate
-    /// метод делегата
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else {
-            return
-        }
-        currentQuestion = question
-        let viewModel = convert(model: question)
-        DispatchQueue.main.async { [weak self] in
-            self?.viewController?.show(quiz: viewModel)
-        }
-    }
     // MARK: - Buttons
     /// Кнопка да
     func buttonYes() {
@@ -219,5 +204,3 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.showAnswerResult(isCorrect: isCorrect)
     }
 }
-
-

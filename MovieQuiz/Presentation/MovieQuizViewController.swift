@@ -21,7 +21,7 @@ final class MovieQuizViewController: UIViewController {
     /// функция, для загрузки экрана в памяти
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.viewController = self
+        presenter = MovieQuizPresenter(viewController: self)
     }
     // MARK: - Loader Indicator
     /// показывает лоадер

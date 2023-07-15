@@ -20,13 +20,13 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     // MARK: - Loader Indicator
     /// показывает лоадер
     internal func showLoadingIndicator() {
-        loader.hidesWhenStopped = true
-        loader.startAnimating()
+        loader?.hidesWhenStopped = true
+        loader?.startAnimating()
     }
     /// скрывает лоудер
     internal func hideLoadingIndicator () {
-        loader.hidesWhenStopped = true
-        loader.stopAnimating()
+        loader?.hidesWhenStopped = true
+        loader?.stopAnimating()
     }
     // MARK: - Show Alert Error for Data Response
     func showImageLoadingError() {

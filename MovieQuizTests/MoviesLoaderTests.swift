@@ -23,18 +23,21 @@ class MoviesLoaderTests: XCTestCase {
         // Given
         let stubNetworkClient = StubNetworkClient(emulateError: false)
         let loader = MoviesLoader(stubNetworkClient: stubNetworkClient)
+        // Create expectation
+        let expectation = XCTestExpectation(description: "Movies loaded")
         // When
         loader.loadMovies { result in
             // Then
             switch result {
             case .success(let movies):
                 XCTAssertEqual(movies.movies.count, 250)
-                self.expectation.fulfill()
+                expectation.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected failure: \(error)")
             }
         }
-        waitForExpectations(timeout: 2)
+        // Wait for the expectation
+        wait(for: [expectation], timeout: 5)
     }
     func testErrorLoading() throws {
         // Given

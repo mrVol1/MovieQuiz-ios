@@ -17,7 +17,10 @@ struct MoviesLoader: MoviesLoading {
     private let stubNetworkClient: StubNetworkClient
     private let networkClient: NetworkClient
     // init networkClient
-    init(networkClient: NetworkClient = NetworkClient(apiKey: apiKey), stubNetworkClient: StubNetworkClient = StubNetworkClient(emulateError: false)) {
+    init(
+        networkClient: NetworkClient = NetworkClient(apiKey: apiKey),
+        stubNetworkClient: StubNetworkClient = StubNetworkClient(emulateError: false)
+    ) {
         self.networkClient = networkClient
         self.stubNetworkClient = stubNetworkClient
     }
@@ -25,19 +28,20 @@ struct MoviesLoader: MoviesLoading {
     func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void) {
         var request = URLRequest(
             url: URL(
-                string: "https://api.kinopoisk.dev/v1.3/movie?selectFields=name&selectFields=rating.imdb&selectFields=poster.url&page=1&limit=250"
+                string: """
+                https://api.kinopoisk.dev/v1.3/movie?selectFields=name&selectFields=rating.imdb&selectFields=poster.url&page=1&limit=250
+                """
                     )!,
-                                 timeoutInterval: Double.infinity)
+                        timeoutInterval: Double.infinity)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue(MoviesLoader.apiKey, forHTTPHeaderField: "X-API-KEY")
         request.httpMethod = "GET"
-        let task = URLSession.shared.dataTask(with: request) { data, response, error
+        let task = URLSession.shared.dataTask(with: request) { data, _, error
             in guard let data = data else {
                 print(String(describing: error))
                 return
             }
             do {
-//                print(String(data: data, encoding: .utf8)!)
                 let mostPopularMovies = try JSONDecoder().decode(MostPopularMovies.self, from: data)
                 handler(.success(mostPopularMovies))
             } catch {

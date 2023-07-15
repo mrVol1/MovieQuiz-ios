@@ -52,7 +52,7 @@ class MoviesLoaderTests: XCTestCase {
             switch result {
             case .failure(let error):
                 loadingError = error
-            case .success(_):
+            case .success:
                 loadingError = nil
             }
             // Fulfill the expectation inside the completion block

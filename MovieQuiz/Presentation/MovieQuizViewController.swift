@@ -15,7 +15,11 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     override func viewDidLoad() {
         super.viewDidLoad()
         let alertPresent = AlertPresentImplementation(viewController: self)
-        presenter = MovieQuizPresenter(viewController: self, statisticServiceFactory: StatisticServiceFactory(), alertPresent: alertPresent)
+        presenter = MovieQuizPresenter(
+            viewController: self,
+            statisticServiceFactory: StatisticServiceFactory(),
+            alertPresent: alertPresent
+        )
     }
     // MARK: - Loader Indicator
     /// показывает лоадер

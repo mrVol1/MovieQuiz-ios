@@ -30,7 +30,8 @@ final class MovieQuizViewTest: XCTestCase {
         let emptyData = Data()
         let viewControllerMockData = MovieQuizViewController()
         let sut = MovieQuizPresenter(viewController: viewControllerMockData,
-                                     statisticServiceFactory: StatisticServiceFactory(), alertPresent: AlertPresentImplementation(viewController: UIViewController()))
+                                     statisticServiceFactory: StatisticServiceFactory(),
+                                     alertPresent: AlertPresentImplementation(viewController: UIViewController()))
         let question = QuizQuestion(image: emptyData, text: "Question Test", correctAnswer: Answer.yes)
         let viewModel = sut.convert(model: question)
         XCTAssertNotNil(viewModel.image)

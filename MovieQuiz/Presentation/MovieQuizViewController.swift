@@ -1,15 +1,15 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
-    @IBOutlet weak var image: UIImageView!
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
+    @IBOutlet weak private var image: UIImageView!
     @IBOutlet weak private var questionLable: UILabel!
     @IBOutlet weak private var counterL: UILabel!
-    @IBOutlet weak var loader: UIActivityIndicatorView!
+    @IBOutlet weak private var loader: UIActivityIndicatorView!
     @IBOutlet weak private var buttonYes: UIButton!
     @IBOutlet weak private var buttonNo: UIButton!
+    var correctAnswers: Int = 0
     /// приватные переменные
     private var presenter: MovieQuizPresenter?
-    private var alertPresent: AlertPresent?
     // MARK: - Lifecycle
     /// функция, для загрузки экрана в памяти
     override func viewDidLoad() {
@@ -20,11 +20,13 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Loader Indicator
     /// показывает лоадер
     internal func showLoadingIndicator() {
-        presenter?.showLoadingIndicator()
+        loader.hidesWhenStopped = true
+        loader.startAnimating()
     }
     /// скрывает лоудер
     internal func hideLoadingIndicator () {
-        presenter?.hideLoadingIndicator()
+        loader.hidesWhenStopped = true
+        loader.stopAnimating()
     }
     // MARK: - Show Alert Error for Data Response
     func showImageLoadingError() {
@@ -50,7 +52,17 @@ final class MovieQuizViewController: UIViewController {
     }
     /// функция, которая выводит результат ответа (правильно или неправильно ответил)
     func showAnswerResult(isCorrect: Bool) {
-        presenter?.showAnswerResult(isCorrect: isCorrect)
+        if isCorrect {
+            correctAnswers += 1
+        }
+        image.layer.masksToBounds = true
+        image.layer.borderWidth = 8
+        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.showNextQuestionOrResults()
+            self.image.layer.borderWidth = 0
+        }
     }
     /// функция, которая показывает результат квиза
     func showQuizResult() {

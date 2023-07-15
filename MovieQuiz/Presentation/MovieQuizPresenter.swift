@@ -14,10 +14,10 @@ enum Answer {
 }
 
 final class MovieQuizPresenter: QuestionFactoryDelegate {
+    internal weak var delegate: QuestionFactoryDelegate?
     weak var viewController: MovieQuizViewController?
     private let questionsAmount: Int = 10
     private var currentQuestion: QuizQuestion?
-    private var correctAnswers: Int = 0
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresent: AlertPresent?
     private var alertPresenterError: AlertPresenterError?
@@ -26,24 +26,26 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private var isButtonYesEnabled = true
     private var isButtonNoEnabled = true
     private var randomWord = "больше"
-    init(viewController: MovieQuizViewController, statisticServiceFactory: StatisticServiceFactory, alertPresent: AlertPresent) {
+    init(viewController: MovieQuizViewController,
+         statisticServiceFactory: StatisticServiceFactory,
+         alertPresent: AlertPresent) {
         self.viewController = viewController
-        self.questionFactory = QuestionFactory(moviesLoader: MoviesLoader(networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)), delegate: self, randomWord: randomWord)
+        self.questionFactory =
+                        QuestionFactory(moviesLoader: MoviesLoader(
+                            networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)
+                        ),
+                        delegate: self,
+                        randomWord: randomWord)
         self.questionFactory?.loadData()
-        self.viewController?.showLoadingIndicator()
         self.statisticService = statisticServiceFactory.makeStaticService()
         self.alertPresent = alertPresent
     }
     // MARK: - Loader Indicator
-    /// показывает лоадер
-    internal func showLoadingIndicator() {
-        viewController?.loader.hidesWhenStopped = true
-        viewController?.loader.startAnimating()
+    func showLoadingIndicator() {
+        viewController?.showLoadingIndicator()
     }
-    /// скрывает лоудер
-    internal func hideLoadingIndicator () {
-        viewController?.loader.hidesWhenStopped = true
-        viewController?.loader.stopAnimating()
+    func hideLoadingIndicator() {
+        viewController?.hideLoadingIndicator()
     }
     // MARK: - QuestionFactoryDelegate
     func didLoadDataFromServer() {
@@ -69,7 +71,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     // MARK: - Main Func
     func restartGame() {
         currentQuestionIndex = 0
-        correctAnswers = 0
+        viewController?.correctAnswers = 0
         questionFactory?.requestNextQuestion()
     }
     /// функции для представления currentQuestionIndex и questionsAmount в других слоях
@@ -113,14 +115,14 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     /// функция, которая показывает результат квиза
     func showQuizResult() {
-        statisticService?.store(correct: correctAnswers, total: questionsAmount)
+        statisticService?.store(correct: viewController?.correctAnswers ?? 0, total: questionsAmount)
         guard let statisticService = statisticService else {
             assertionFailure("Ошибка игры")
             return
         }
         let message =
             """
-    Ваш результат: \(correctAnswers)/\(questionsAmount),
+    Ваш результат: \(viewController?.correctAnswers ?? 0)/\(questionsAmount),
     Количество сыгранных квизов: \(statisticService.gamesCount),
     Рекорд: \(statisticService.bestGame?.correct ?? 0)/10 (\((statisticService.bestGame?.date.dateTimeString) ?? "Ошибка времени")),
     Средняя точность \(String(format: "%.2f", statisticService.totalAccuracy))
@@ -130,7 +132,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             message: message,
             buttonText: "Сыграть ещё раз",
             completion: { [weak self] in
-                self?.correctAnswers = 0
+                self?.viewController?.correctAnswers = 0
                 self?.resetQuestionIndex()
                 self?.questionFactory?.requestNextQuestion()
             }
@@ -140,20 +142,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     /// метод для определения состояния кнопки
     func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
         viewController?.showButtonState(isButtonYesEnabled: isButtonYesEnabled, isButtonNoEnabled: isButtonNoEnabled)
-    }
-    /// функция, которая выводит результат ответа (правильно или неправильно ответил)
-    func showAnswerResult(isCorrect: Bool) {
-        if isCorrect {
-            correctAnswers += 1
-        }
-        viewController?.image.layer.masksToBounds = true
-        viewController?.image.layer.borderWidth = 8
-        viewController?.image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            self.showNextQuestionOrResults()
-            self.viewController?.image.layer.borderWidth = 0
-        }
     }
     /// метод показывающий, что произошла ошибка в сети
     func showNetworkError(message: String) {

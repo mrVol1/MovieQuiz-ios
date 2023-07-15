@@ -45,7 +45,7 @@ class MoviesLoaderTests: XCTestCase {
         let loader = MoviesLoader(stubNetworkClient: stubNetworkClient)
         // When
         var loadingError: Error?
-        // Create the expectation using `self.expectation(description:)`
+        // Create the expectation
         let errorExpectation = self.expectation(description: "Error expectation")
         loader.loadMovies { result in
             // Then

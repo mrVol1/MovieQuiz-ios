@@ -124,7 +124,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             """
     Ваш результат: \(viewController?.correctAnswers ?? 0)/\(questionsAmount),
     Количество сыгранных квизов: \(statisticService.gamesCount),
-    Рекорд: \(statisticService.bestGame?.correct ?? 0)/10 (\((statisticService.bestGame?.date.dateTimeString) ?? "Ошибка времени")),
+    Рекорд: \(statisticService.bestGame?.correct ?? 0)/10 (\((statisticService.bestGame?.date.dateTimeString)
+    ?? "Ошибка времени")),
     Средняя точность \(String(format: "%.2f", statisticService.totalAccuracy))
 """
         let viewModel = AlertModel(

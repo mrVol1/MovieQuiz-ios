@@ -3,86 +3,100 @@ import UIKit
 final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     @IBOutlet weak private var image: UIImageView!
     @IBOutlet weak private var questionLable: UILabel!
-    @IBOutlet weak private var counterL: UILabel!
+    @IBOutlet weak private var counterLable: UILabel!
     @IBOutlet weak private var loader: UIActivityIndicatorView!
     @IBOutlet weak private var buttonYes: UIButton!
     @IBOutlet weak private var buttonNo: UIButton!
     var correctAnswers: Int = 0
-    /// приватные переменные
+    
     private var presenter: MovieQuizPresenter?
-    // MARK: - Lifecycle
-    /// функция, для загрузки экрана в памяти
+    private var alertPresenterError: AlertPresenterError?
+    private var alertPresent: AlertPresent?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let alertPresent = AlertPresentImplementation(viewController: self)
-        presenter = MovieQuizPresenter(
-            viewController: self,
-            statisticServiceFactory: StatisticServiceFactory(),
-            alertPresent: alertPresent
-        )
+        do {
+            presenter = MovieQuizPresenter(viewController: self, statisticServiceFactory: StatisticServiceFactory())
+        } catch {
+            // Обработка ошибки и вывод сообщения об ошибке
+            print("Ошибка инициализации презентера: \(error)")
+        }
     }
-    // MARK: - Loader Indicator
-    /// показывает лоадер
-    internal func showLoadingIndicator() {
+    
+    // Loader Indicator
+    func showLoadingIndicator() {
         loader?.hidesWhenStopped = true
         loader?.startAnimating()
     }
-    /// скрывает лоудер
-    internal func hideLoadingIndicator () {
+    
+    func hideLoadingIndicator() {
         loader?.hidesWhenStopped = true
         loader?.stopAnimating()
     }
-    // MARK: - Show Alert Error for Data Response
+    
+    // Show Alert Error for Data Response
     func showImageLoadingError() {
-        presenter?.showImageLoadingError()
+        hideLoadingIndicator()
+        let alert = AlertModelError(
+            title: "Ошибка загрузки изображения",
+            message: "Не удалось загрузить постер фильма",
+            buttonText: "Попробовать еще раз"
+        ) { [weak self] in
+            self?.alertPresenterError?.restartGame()
+        }
+        alertPresenterError?.showImageError(alertPresentError: alert)
     }
+    
     func showNetworkError(message: String) {
-        presenter?.showNetworkError(message: message)
+        let alert = UIAlertController(
+            title: "Network Error",
+            message: message,
+            preferredStyle: .alert
+        )
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
     }
-    /// метод отображения алерта при загрузке постера
-    func didFailToLoadImage() {
-        showImageLoadingError()
-    }
-    // MARK: - MainFunc
-    /// функция, которая показывает вопрос
+    
+    // MainFunc
     func show(quiz step: QuizStepViewModel) {
         image.image = step.image
         questionLable.text = step.question
-        counterL.text = step.questionNumber
+        counterLable.text = step.questionNumber
     }
-    /// функция показа следующего вопроса или показывает результат
-    private func showNextQuestionOrResults() {
-        presenter?.showNextQuestionOrResults()
-    }
-    /// функция, которая выводит результат ответа (правильно или неправильно ответил)
+    
     func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             correctAnswers += 1
         }
+        
         image.layer.masksToBounds = true
         image.layer.borderWidth = 8
-        image.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        image.layer.borderColor = isCorrect ? UIColor.green.cgColor : UIColor.red.cgColor
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            self.showNextQuestionOrResults()
+            self.presenter?.showNextQuestionOrResults()
             self.image.layer.borderWidth = 0
         }
     }
-    /// функция, которая показывает результат квиза
+    
     func showQuizResult() {
         presenter?.showQuizResult()
     }
-    /// функция для отображения состояния кнопок
+    
     func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.buttonYes.isEnabled = isButtonYesEnabled
             self?.buttonNo.isEnabled = isButtonNoEnabled
         }
     }
-    // MARK: - ButtonsView
+    
+    // ButtonsView
     @IBAction private func buttonYes(_ sender: UIButton) {
         presenter?.buttonYes()
     }
+    
     @IBAction private func buttonNo(_ sender: UIButton) {
         presenter?.buttonNo()
     }

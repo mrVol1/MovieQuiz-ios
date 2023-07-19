@@ -11,6 +11,7 @@ import UIKit
 @testable import MovieQuiz
 
 final class MovieQuizUiViewTest: MovieQuizViewControllerProtocol {
+    var alertPresent: MovieQuiz.AlertPresent?
     
     var correctAnswers: Int = 0
     

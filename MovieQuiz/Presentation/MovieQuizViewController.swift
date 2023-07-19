@@ -56,10 +56,10 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     
     // MainFunc
     func show(quiz step: QuizStepViewModel) {
-        DispatchQueue.main.async {
-            self.image.image = step.image
-            self.questionLable.text = step.question
-            self.counterLable.text = step.questionNumber
+        DispatchQueue.main.async { [weak self] in
+            self?.image.image = step.image
+            self?.questionLable.text = step.question
+            self?.counterLable.text = step.questionNumber
         }
     }
     

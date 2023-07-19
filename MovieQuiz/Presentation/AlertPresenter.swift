@@ -33,6 +33,5 @@ extension AlertPresentImplementation: AlertPresent {
         }
         alert.addAction(action)
         viewController?.present(alert, animated: true)
-        alert.view?.accessibilityIdentifier = "Game results"
     }
 }

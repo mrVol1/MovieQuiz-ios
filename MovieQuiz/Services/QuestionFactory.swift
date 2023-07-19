@@ -24,7 +24,6 @@ class QuestionFactory {
     }
     
     func loadData() {
-        delegate?.showLoadingIndicator()
         moviesLoader.loadMovies { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }

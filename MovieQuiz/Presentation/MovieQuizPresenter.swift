@@ -18,15 +18,13 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private let questionsAmount: Int = 10
     private var currentQuestion: QuizQuestion?
     private var questionFactory: QuestionFactory?
-    private var alertPresent: AlertPresent?
-    private var alertPresenterError: AlertPresenterError?
     private var statisticService: StatisticService?
     private var currentQuestionIndex = 0
     private var isButtonYesEnabled = true
     private var isButtonNoEnabled = true
     private var randomWord = "больше"
     
-    init(viewController: MovieQuizViewControllerProtocol, statisticServiceFactory: StatisticServiceFactory) {
+    init(viewController: MovieQuizViewControllerProtocol, statisticServiceFactory: StatisticServiceFactory, alertPresent: AlertPresent?) {
         self.viewController = viewController
         self.questionFactory = QuestionFactory(
             moviesLoader: MoviesLoader(networkClient: NetworkClient(apiKey: MoviesLoader.apiKey)),
@@ -34,7 +32,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             randomWord: randomWord
         )
         self.statisticService = statisticServiceFactory.makeStaticService()
-        self.alertPresenterError = viewController as? AlertPresenterError
+        self.questionFactory?.loadData()
+        self.questionFactory?.delegate?.showLoadingIndicator()
     }
     
     func showImageLoadingError() {
@@ -50,23 +49,23 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     func didLoadDataFromServer() {
-        viewController?.hideLoadingIndicator()
-        questionFactory?.requestNextQuestion()
+        self.hideLoadingIndicator()
+        self.questionFactory?.requestNextQuestion()
     }
     
     func didFailToLoadData(with error: Error) {
-            let message = error.localizedDescription
-            viewController?.showNetworkError(message: message)
+        let message = error.localizedDescription
+        viewController?.showNetworkError(message: message)
+    }
+    
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question = question else {
+            return
         }
-
-        func didReceiveNextQuestion(question: QuizQuestion?) {
-            guard let question = question else {
-                return
-            }
-            currentQuestion = question
-            let viewModel = convert(model: question)
-            viewController?.show(quiz: viewModel)
-        }
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        viewController?.show(quiz: viewModel)
+    }
     
     func showNextQuestionOrResults() {
         if itLastQuestion() {
@@ -108,7 +107,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             self?.resetQuestionIndex()
             self?.questionFactory?.requestNextQuestion()
         }
-        alertPresent?.show(alertPresent: viewModel)
+        viewController?.alertPresent?.show(alertPresent: viewModel)
     }
     
     func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
@@ -138,7 +137,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.showAnswerResult(isCorrect: isCorrect)
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+    func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
             image: UIImage(data: model.image) ?? UIImage(),
             question: model.text,

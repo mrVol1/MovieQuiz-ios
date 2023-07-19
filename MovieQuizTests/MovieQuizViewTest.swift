@@ -11,6 +11,9 @@ import UIKit
 @testable import MovieQuiz
 
 final class MovieQuizUiViewTest: MovieQuizViewControllerProtocol {
+    
+    var correctAnswers: Int = 0
+    
     func show(quiz step: MovieQuiz.QuizStepViewModel) {
     }
     func showQuizResult() {
@@ -22,6 +25,10 @@ final class MovieQuizUiViewTest: MovieQuizViewControllerProtocol {
     func hideLoadingIndicator() {
     }
     func showNetworkError(message: String) {
+    }
+    func showButtonState(isButtonYesEnabled: Bool, isButtonNoEnabled: Bool) {
+    }
+    func showImageLoadingError() {
     }
 }
 

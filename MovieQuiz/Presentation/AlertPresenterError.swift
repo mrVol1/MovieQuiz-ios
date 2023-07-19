@@ -39,6 +39,5 @@ extension AlertPresenterErrorImplementasion: AlertPresenterError {
     
     func restartGame() {
         questionFactory?.loadData()
-        questionFactory?.requestNextQuestion()
     }
 }

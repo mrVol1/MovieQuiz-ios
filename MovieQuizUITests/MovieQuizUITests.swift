@@ -22,6 +22,7 @@ final class MovieQuizUITests: XCTestCase {
         app.terminate()
         app = nil
     }
+    
     func testButtonYes() {
             sleep(3)
         let firstPoster = app.images["Poster"]
@@ -33,6 +34,7 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssertNotEqual(firstPosterData, secondPosterData)
         let indexLabel = app.staticTexts["Index"]
         XCTAssertEqual(indexLabel.label, "2/10")
+        
     }
     func testButtonNo() {
         sleep(3)
@@ -46,25 +48,35 @@ final class MovieQuizUITests: XCTestCase {
         let indexLabel = app.staticTexts["Index"]
         XCTAssertEqual(indexLabel.label, "2/10")
     }
+    
     func testGameFinish() {
         sleep(2)
         for _ in 1...10 {
             app.buttons["No"].tap()
             sleep(2)
         }
-        let alert = app.alerts["Game results"]
+        // Ищем алерт с заданным заголовком
+        let predicate = NSPredicate(format: "label == %@", "Этот раунд окончен!")
+        let alert = app.alerts.element(matching: predicate)
+        // Проверяем, что алерт существует
         XCTAssertTrue(alert.exists)
-        XCTAssertTrue(alert.label == "Этот раунд окончен!")
-        XCTAssertTrue(alert.buttons.firstMatch.label == "Сыграть ещё раз")
+        // Далее продолжаем с проверками и взаимодействием с алертом, например:
+        XCTAssertTrue(alert.buttons["Сыграть ещё раз"].exists)
+        alert.buttons["Сыграть ещё раз"].tap()
+        // Проверяем, что алерт больше не существует
+        XCTAssertFalse(alert.exists)
     }
+
     func testAlertDismiss() {
         sleep(2)
         for _ in 1...10 {
             app.buttons["Yes"].tap()
             sleep(2)
         }
-        let alert = app.alerts["Game results"]
-        alert.buttons.firstMatch.tap()
+        let predicate = NSPredicate(format: "label == %@", "Этот раунд окончен!")
+        let alert = app.alerts.element(matching: predicate)
+        XCTAssertTrue(alert.buttons["Сыграть ещё раз"].exists)
+        alert.buttons["Сыграть ещё раз"].tap()
         sleep(2)
         let indexLabel = app.staticTexts["Index"]
         XCTAssertFalse(alert.exists)

@@ -9,18 +9,14 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     @IBOutlet weak private var buttonNo: UIButton!
     var correctAnswers: Int = 0
     
+    internal var alertPresent: AlertPresent?
     private var presenter: MovieQuizPresenter?
     private var alertPresenterError: AlertPresenterError?
-    private var alertPresent: AlertPresent?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        do {
-            presenter = MovieQuizPresenter(viewController: self, statisticServiceFactory: StatisticServiceFactory())
-        } catch {
-            // Обработка ошибки и вывод сообщения об ошибке
-            print("Ошибка инициализации презентера: \(error)")
-        }
+        alertPresent = AlertPresentImplementation(viewController: self)
+        presenter = MovieQuizPresenter(viewController: self, statisticServiceFactory: StatisticServiceFactory(), alertPresent: alertPresent)
     }
     
     // Loader Indicator
@@ -60,9 +56,11 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     
     // MainFunc
     func show(quiz step: QuizStepViewModel) {
-        image.image = step.image
-        questionLable.text = step.question
-        counterLable.text = step.questionNumber
+        DispatchQueue.main.async {
+            self.image.image = step.image
+            self.questionLable.text = step.question
+            self.counterLable.text = step.questionNumber
+        }
     }
     
     func showAnswerResult(isCorrect: Bool) {

@@ -10,13 +10,16 @@ import UIKit
 
 protocol AlertPresenterError {
     func showImageError (alertPresentError: AlertModelError)
+    func restartGame()
 }
 
 final class AlertPresenterErrorImplementasion {
     private weak var viewControllerError: UIViewController?
-
-    init(viewControllerError: UIViewController? = nil) {
+    private var questionFactory: QuestionFactory?
+    
+    init(viewControllerError: UIViewController? = nil, questionFactory: QuestionFactory? = nil) {
         self.viewControllerError = viewControllerError
+        self.questionFactory = questionFactory
     }
 }
 
@@ -25,11 +28,16 @@ extension AlertPresenterErrorImplementasion: AlertPresenterError {
         let alert = UIAlertController(
             title: alertPresentError.title,
             message: alertPresentError.message,
-            preferredStyle: .alert)
+            preferredStyle: .alert
+        )
         let action = UIAlertAction(title: alertPresentError.buttonText, style: .default) { _ in
             alertPresentError.completion()
         }
         alert.addAction(action)
         viewControllerError?.present(alert, animated: true, completion: nil)
+    }
+    
+    func restartGame() {
+        questionFactory?.loadData()
     }
 }

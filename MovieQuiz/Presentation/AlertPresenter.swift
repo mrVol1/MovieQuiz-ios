@@ -13,9 +13,9 @@ protocol AlertPresent {
 }
 
 final class AlertPresentImplementation {
-
+    
     private weak var viewController: UIViewController?
-
+    
     init(viewController: UIViewController? = nil) {
         self.viewController = viewController
     }
@@ -26,12 +26,12 @@ extension AlertPresentImplementation: AlertPresent {
         let alert = UIAlertController(
             title: alertPresent.title,
             message: alertPresent.message,
-            preferredStyle: .alert)
+            preferredStyle: .alert
+        )
         let action = UIAlertAction(title: alertPresent.buttonText, style: .default) { _ in
             alertPresent.completion()
         }
         alert.addAction(action)
         viewController?.present(alert, animated: true)
-        alert.view?.accessibilityIdentifier = "Game results"
     }
 }
